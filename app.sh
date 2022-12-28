@@ -2,17 +2,18 @@ cat > examples/$1.rs <<- EOF
 use nannou::prelude::*;
 
 fn main() {
-    nannou::app(model)
-        .update(update)
-        // event or update
-        //.event(event)
-        .simple_window(view)
-        .run();
+    nannou::app(model).update(update).run();
 }
 
 struct Model {}
 
-fn model(_app: &App) -> Model {
+fn model(app: &App) -> Model {
+    let _window_id = app
+        .new_window()
+        .size(600, 600)
+        .view(view)
+        .build()
+        .unwrap();
     Model {}
 }
 

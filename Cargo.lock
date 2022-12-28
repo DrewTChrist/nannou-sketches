@@ -1517,6 +1517,7 @@ dependencies = [
  "geocoding",
  "nannou",
  "nannou_egui",
+ "palette",
  "rand 0.8.5",
  "reqwest",
  "simple-xml",

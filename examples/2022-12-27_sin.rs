@@ -3,7 +3,7 @@
 //! Looping through all the points in a wave in the update function
 //! was incrementing the step to quickly to do anything nice. I ended up
 //! giving the Line struct a `sin` value. This number is the incremented
-//! number that I get sine from. When instantiating each Line struct, I 
+//! number that I get sine from. When instantiating each Line struct, I
 //! increment the `sin` value so that it's different for each line but
 //! only by a small increment.
 use nannou::prelude::*;
@@ -19,18 +19,24 @@ struct Line {
     start: Vec2,
     end: Vec2,
     sin: f32,
+    color: Rgb<u8>,
 }
 
 impl Line {
-    fn new(start: Vec2, end: Vec2, sin: f32) -> Self {
-        Self { start, end, sin }
+    fn new(start: Vec2, end: Vec2, sin: f32, color: Rgb<u8>) -> Self {
+        Self {
+            start,
+            end,
+            sin,
+            color,
+        }
     }
 
-    fn draw(&self, draw: &Draw, color: Rgb<u8>) {
+    fn draw(&self, draw: &Draw) {
         draw.line()
             .start(self.start)
             .end(self.end)
-            .color(color)
+            .color(self.color)
             .weight(1.0);
     }
 }
@@ -38,9 +44,10 @@ impl Line {
 type SinWave = Vec<Line>;
 
 struct Model {
-    wave_1: SinWave,
+    /*wave_1: SinWave,
     wave_2: SinWave,
-    wave_3: SinWave,
+    wave_3: SinWave,*/
+    waves: [SinWave; 3],
 }
 
 fn model(app: &App) -> Model {
@@ -59,23 +66,24 @@ fn model(app: &App) -> Model {
     let mut x: f32 = bounds.left();
     let mut sin: f32 = 0.0;
     while x <= bounds.right() {
-        wave_1.push(Line::new(pt2(x, 0.0), pt2(x, 0.0), sin));
-        wave_2.push(Line::new(pt2(x + 1.0, 0.0), pt2(x + 1.0, 0.0), sin));
-        wave_3.push(Line::new(pt2(x + 2.0, 0.0), pt2(x + 2.0, 0.0), sin));
+        wave_1.push(Line::new(pt2(x, 0.0), pt2(x, 0.0), sin, WHITE));
+        wave_2.push(Line::new(pt2(x + 1.0, 0.0), pt2(x + 1.0, 0.0), sin, RED));
+        wave_3.push(Line::new(pt2(x + 2.0, 0.0), pt2(x + 2.0, 0.0), sin, BLUE));
         x += 10.0;
         sin += 0.1;
     }
-
+    let waves = [wave_1, wave_2, wave_3];
     Model {
-        wave_1,
+        /*wave_1,
         wave_2,
-        wave_3,
+        wave_3,*/
+        waves,
     }
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
     let bounds = app.window_rect();
-    for line in model.wave_1.iter_mut() {
+    /*for line in model.wave_1.iter_mut() {
         let sin = map_range(line.sin.sin(), -1.0, 1.0, 0.0, bounds.top());
         line.start.y = -sin;
         line.end.y = sin;
@@ -92,6 +100,14 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         line.start.y = -sin;
         line.end.y = sin;
         line.sin += 0.015;
+    }*/
+    for wave in model.waves.iter_mut() {
+        for line in wave.iter_mut() {
+            let sin = map_range(line.sin.sin(), -1.0, 1.0, 0.0, bounds.top());
+            line.start.y = -sin;
+            line.end.y = sin;
+            line.sin += 0.015;
+        }
     }
 }
 
@@ -106,7 +122,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .w_h(WIDTH as f32, HEIGHT as f32)
         .color(rgba(0.0, 0.0, 0.0, 0.1));
 
-    for line in &model.wave_1 {
+    /*for line in &model.wave_1 {
         line.draw(&draw, WHITE);
     }
 
@@ -115,6 +131,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
 
     for line in &model.wave_3 {
-        line.draw(&draw, RED); }
+        line.draw(&draw, RED);
+    }*/
+
+    for wave in &model.waves {
+        for line in wave {
+            line.draw(&draw);
+        }
+    }
     draw.to_frame(app, &frame).unwrap();
 }
