@@ -35,13 +35,13 @@ impl Ellipse {
             self.color.color.red,
             self.color.color.green,
             self.color.color.blue,
-            self.color.alpha
+            self.color.alpha,
         );
         let b = LinSrgba::new(
             model.fade.color.red,
             model.fade.color.green,
             model.fade.color.blue,
-            model.fade.alpha
+            model.fade.alpha,
         );
         let c = a.blend(b, blend_mode);
         draw.ellipse()
@@ -128,9 +128,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.background().color(BLACK);
     }
 
-    draw.rect()
-        .w_h(600.0, 600.0)
-        .color(model.fade);
+    draw.rect().w_h(600.0, 600.0).color(model.fade);
 
     for ell in &model.ell {
         ell.draw(&draw, &model);

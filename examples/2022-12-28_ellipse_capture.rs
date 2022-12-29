@@ -38,13 +38,13 @@ impl Ellipse {
             self.color.color.red,
             self.color.color.green,
             self.color.color.blue,
-            self.color.alpha
+            self.color.alpha,
         );
         let b = LinSrgba::new(
             model.fade.color.red,
             model.fade.color.green,
             model.fade.color.blue,
-            model.fade.alpha
+            model.fade.alpha,
         );
         let c = a.blend(b, blend_mode);
         draw.ellipse()
@@ -68,7 +68,12 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let [win_w, win_h] = [TEXTURE_SIZE[0] / 4, TEXTURE_SIZE[1] / 4];
-    let window_id = app.new_window().size(win_w, win_h).view(view).build().unwrap();
+    let window_id = app
+        .new_window()
+        .size(win_w, win_h)
+        .view(view)
+        .build()
+        .unwrap();
     //let window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     let bounds = app.window_rect();
 
