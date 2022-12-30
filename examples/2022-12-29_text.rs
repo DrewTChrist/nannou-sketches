@@ -1,9 +1,7 @@
-use nannou::color::gradient::Gradient;
 use nannou::geom::Rect;
 use nannou::prelude::*;
 use nannou::text::{font::from_file, Font};
-use palette::blend::{Equations, Parameter};
-use palette::{Blend, LinSrgba};
+use nannou_sketches::grad_circle::Background;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -11,7 +9,7 @@ fn main() {
 
 #[rustfmt::skip]
 const CODE: &str = 
-"
+"\
  1 struct Depth;
  2
  3 struct Adjacency;
@@ -22,115 +20,131 @@ const CODE: &str =
  8    println!(\"Imposter\");
  9 }
 10
-11 struct Color;
-";
+11 struct Color;";
 
-struct Circle {
-    radius: f32,
-    color: LinSrgba,
+struct CodeWriter {
+    font: Font,
+    font_size: u32,
+    rect: Rect,
+    string: String,
+    lines: Vec<String>,
+    index: usize,
+    line: usize,         // current line
+    line_index: usize,   // current character in line
+    string_index: usize, // current spot in total string
 }
 
-struct Background {
-    circles: Vec<Circle>,
-    /*blend_mode: Equations,
-    gradient: Gradient<LinSrgba>,*/
-}
-
-impl Background {
-    fn new(num_circles: u32, gradient_step: f32, radius_step: f32) -> Self {
-        let blend_mode =
-            Equations::from_parameters(Parameter::SourceAlpha, Parameter::DestinationAlpha);
-        let gradient = Gradient::new([
-            LinSrgba::new(0.0, 0.0, 0.0, 0.05),
-            LinSrgba::new(50.0, 50.0, 50.0, 0.05),
-            LinSrgba::new(100.0, 100.0, 100.0, 0.05),
-            LinSrgba::new(150.0, 150.0, 150.0, 0.05),
-            LinSrgba::new(255.0, 255.0, 255.0, 0.05),
-        ]);
-        //let gradient_step = 0.0001;
-        let mut circles = Vec::<Circle>::new();
-        let mut gradient_count = 0.0;
-        let mut radius = 10.0;
-        for _i in 0..num_circles {
-            let current = gradient.get(gradient_count);
-            let next = gradient.get(gradient_count + gradient_step);
-            let a = LinSrgba::new(current.red, current.green, current.blue, current.alpha);
-            let b = LinSrgba::new(next.red, next.green, next.blue, next.alpha);
-            let c = a.blend(b, blend_mode);
-            circles.push(Circle { radius, color: c });
-            gradient_count += gradient_step;
-            radius += radius_step;
-        }
+impl CodeWriter {
+    /// Prefer a mono space font for code
+    fn new(font: Font, font_size: u32, rect: Rect, string: String) -> Self {
         Self {
-            circles,
-            /*blend_mode,
-            gradient,*/
+            font,
+            font_size,
+            rect,
+            index: 0,
+            string_index: 0,
+            line: 0,
+            line_index: 0,
+            lines: string.split("\n").map(|s| String::from(s)).collect(),
+            //string,
+            string: String::new(),
         }
     }
+
     fn draw(&self, draw: &Draw) {
-        for circle in &self.circles {
-            draw.ellipse()
-                .radius(circle.radius)
-                .x_y(0.0, 0.0)
-                .color(circle.color);
-        }
+        let string =
+            String::from_utf8(self.string.as_bytes()[0..self.string_index].to_vec()).unwrap();
+        let text = text(&string)
+            .font_size(self.font_size)
+            .left_justify()
+            .align_bottom()
+            .font(self.font.clone())
+            .build(self.rect);
+        draw.path().fill().color(WHITE).events(text.path_events());
     }
+
+    fn increment(&mut self) {
+        // if at the end of a line go to next line
+        // copy line to total string
+        // set column index to zero
+        // increase total string index
+        let step = random_range(0, 3);
+        if self.line_index == self.lines[self.line].len() - 1 {
+            if self.line + 1 < self.lines.len() {
+                self.line += 1;
+                self.line_index = 0;
+            }
+        } else if self.line_index + step < self.lines[self.line].len() {
+            self.line_index += step;
+            self.string_index += step;
+            //self.string.push(self.lines[self.line].as_bytes()[self.line_index] as char);
+            self.string.push_str(
+                &String::from_utf8(
+                    self.lines[self.line].as_bytes()[self.line_index - step..self.line_index]
+                        .to_vec(),
+                )
+                .unwrap(),
+            );
+        }
+        //self.string_index += step;
+        //println!(
+        //    "Line: {} Col: {} str: {} Num Lines: {}",
+        //    self.line,
+        //    self.line_index,
+        //    self.string_index,
+        //    self.lines[self.line].len()
+        //);
+    }
+
+    /*fn draw(&self, draw: &Draw) {
+        let string = String::from_utf8(self.string.as_bytes()[0..self.index].to_vec()).unwrap();
+        let text = text(&string)
+            .font_size(self.font_size)
+            .left_justify()
+            .align_bottom()
+            .font(self.font.clone())
+            .build(self.rect);
+        draw.path().fill().color(WHITE).events(text.path_events());
+    }
+
+    fn increment(&mut self) {
+        let mut tries = 0;
+        let mut rand = random_range(0, 3);
+        while !(self.index + rand < self.string.len()) && tries < 3 {
+            rand = random_range(0, 3);
+            tries += 1;
+        }
+        if self.index + rand < self.string.len() {
+            self.index += rand;
+        } else if self.index + 1 < self.string.len() {
+            self.index += 1;
+        }
+    }*/
 }
 
 struct Model {
-    font: Font,
     background: Background,
-    index: usize,
-    string: String,
+    writer: CodeWriter,
 }
 
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     let font = from_file("font.ttf").unwrap();
-    let args: Vec<String> = std::env::args().collect();
-    let circles = args[1].parse::<u32>().unwrap();
-    let grad_step = args[2].parse::<f32>().unwrap();
-    let rad_step = args[3].parse::<f32>().unwrap();
+    let r = Rect::from_x_y_w_h(0.0, 0.0, 300.0, 300.0);
     Model {
-        font,
-        //background: Background::new(20, 0.00005, 20.0),
-        background: Background::new(circles, grad_step, rad_step),
-        index: 0,
-        //string: format!("{}", CODE),
-        string: String::from(CODE),
+        background: Background::new(5, 0.000125, 50.0),
+        writer: CodeWriter::new(font, 13, r, String::from(CODE)),
     }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    let mut tries = 0;
-    let mut rand = random_range(0, 3);
-    //println!("{} {} {}", model.string.len(), model.index, rand);
-    while !(model.index + rand < model.string.len()) && tries < 3 {
-        rand = random_range(0, 3);
-        tries += 1;
-    }
-    if model.index + rand < model.string.len() {
-        model.index += rand;
-    } else if model.index + 1 < model.string.len() {
-        model.index += 1;
-    }
+    model.writer.increment();
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(BLACK);
-    draw.rect().x_y(0.0, 0.0).w_h(300.0, 300.0).color(GRAY);
-    draw.ellipse().x_y(0.0, 0.0).radius(5.0).color(RED);
-    //let r = Rect::from_w_h(600.0, 600.0);
-    let r = Rect::from_x_y_w_h(0.0, 0.0, 300.0, 300.0);
-    let string = String::from_utf8(model.string.as_bytes()[0..model.index].to_vec()).unwrap();
-    let text = text(&string)
-        .font_size(12)
-        .left_justify()
-        .align_bottom()
-        .font(model.font.clone())
-        .build(r);
-    draw.path().fill().color(BLACK).events(text.path_events());
-    //model.background.draw(&draw);
+    model.background.draw(&draw);
+    model.writer.draw(&draw);
     draw.to_frame(app, &frame).unwrap();
 }
