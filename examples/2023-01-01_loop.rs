@@ -1,5 +1,5 @@
-use nannou::prelude::*;
 use nannou::color::rgb_u32;
+use nannou::prelude::*;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -58,7 +58,7 @@ fn model(app: &App) -> Model {
     }
 }
 
-fn update(app: &App, model: &mut Model, _update: Update) {
+fn update(_app: &App, model: &mut Model, _update: Update) {
     model.h.t += 0.05;
     model.i.t += 0.05;
     model.j.t += 0.05;
