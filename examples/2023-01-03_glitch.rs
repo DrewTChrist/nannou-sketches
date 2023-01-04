@@ -1,9 +1,9 @@
 //! Import photo and create a circular wave ((()))
 //! of moving "glitch"
-use nannou::prelude::*;
+use nannou::color::rgb_u32;
 use nannou::image;
 use nannou::image::GenericImageView;
-use nannou::color::rgb_u32;
+use nannou::prelude::*;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -47,7 +47,6 @@ impl GlitchCircle {
                     .color(rgb8(c[0], c[1], c[2]))
                     .w_h(tile_width, tile_height)
                     .x_y(pos_x, pos_y);
-
             }
         }
     }
@@ -61,14 +60,12 @@ struct Model {
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     let assets = app.assets_path().unwrap();
-    let img_path = assets
-        .join("images")
-        .join("stealyourface.png");
+    let img_path = assets.join("images").join("stealyourface.png");
 
     let image = image::open(img_path).unwrap();
     Model {
         glitch: GlitchCircle::new(100.0),
-        image
+        image,
     }
 }
 
