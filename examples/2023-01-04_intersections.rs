@@ -1,6 +1,6 @@
 use nannou::color::Alpha;
+use nannou::noise::{NoiseFn, Perlin};
 use nannou::prelude::*;
-use nannou::noise::{Perlin, NoiseFn};
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -24,7 +24,9 @@ impl Palette {
         _3: Alpha<Rgb<f32>, f32>,
         _4: Alpha<Rgb<f32>, f32>,
     ) -> Self {
-        Self { colors: [_1, _2, _3, _4] }
+        Self {
+            colors: [_1, _2, _3, _4],
+        }
     }
 }
 
@@ -178,7 +180,7 @@ impl Plaid {
 struct Model {
     plaid: Plaid,
     noise: Perlin,
-    nvals: [f64; 3]
+    nvals: [f64; 3],
 }
 
 fn model(app: &App) -> Model {
@@ -186,13 +188,17 @@ fn model(app: &App) -> Model {
     let colors = Palette::new(
         u32_to_srgba(0xfaab78, 0.5),
         u32_to_srgba(0xffdca9, 0.5),
-        u32_to_srgba(0xe8f3d6, 0.5),
-        u32_to_srgba(0xfcf9be, 0.1),
+        u32_to_srgba(0xfcf9be, 0.5),
+        u32_to_srgba(0xe8f3d6, 0.1),
     );
     Model {
         plaid: Plaid::new(3, 200.0, 150.0, 7.5, SecondStripe::Double, colors),
         noise: Perlin::new(),
-        nvals: [random_range(-500.0, 500.0), random_range(-500.0, 500.0), random_range(-500.0, 500.0)]
+        nvals: [
+            random_range(-500.0, 500.0),
+            random_range(-500.0, 500.0),
+            random_range(-500.0, 500.0),
+        ],
     }
 }
 
@@ -205,7 +211,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     //    color.green += gn as f32;
     //    color.blue += bn as f32;
     //}
-    //model.nvals[0] += 0.1; 
+    //model.nvals[0] += 0.1;
     //model.nvals[1] += 0.1;
     //model.nvals[2] += 0.1;
 }
@@ -213,7 +219,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 fn view(app: &App, model: &Model, frame: Frame) {
     let bounds = app.window_rect();
     let draw = app.draw();
-    draw.background().color(BLACK);
+    //draw.background().color(BLACK);
     model.plaid.draw(&draw, bounds);
     draw.to_frame(app, &frame).unwrap();
 }
