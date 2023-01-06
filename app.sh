@@ -17,9 +17,6 @@ fn model(app: &App) -> Model {
     Model {}
 }
 
-// can do event or update
-//fn event(_app: &App, _model: &mut Model, _event: Event) {}
-
 fn update(_app: &App, _model: &mut Model, _update: Update) {}
 
 fn view(app: &App, _model: &Model, frame: Frame) {

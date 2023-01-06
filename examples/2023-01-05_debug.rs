@@ -1,8 +1,8 @@
+use nannou::color::rgb_u32;
 use nannou::geom::Rect;
 use nannou::prelude::*;
 use nannou::text::{font::from_file, Font};
 use nannou_sketches::grad_circle::Background;
-use nannou::color::rgb_u32;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -98,17 +98,21 @@ impl CodeWriter {
         let mut string =
             String::from_utf8(self.string.as_bytes()[0..self.string_index].to_vec()).unwrap();
         let mut x_string = String::from("(");
-        x_string.push_str(x.to_string();
+        x_string.push_str(&x.to_string());
         let mut y_string = y.to_string();
-        string = string.replace("(x ", x_string);
-        string = string.replace(", y ", y_string);
+        string = string.replace("(x ", &x_string);
+        string = string.replace(", y ", &y_string);
         let text = text(&string)
             .font_size(self.font_size)
             .left_justify()
             .align_bottom()
             .font(self.font.clone())
             .build(self.rect);
-        draw.path().fill().color(WHITE).x_y(0.0, 200.0).events(text.path_events());
+        draw.path()
+            .fill()
+            .color(WHITE)
+            .x_y(0.0, 200.0)
+            .events(text.path_events());
     }
 
     fn increment(&mut self) {
@@ -164,7 +168,7 @@ impl CodeWriter {
 struct Model {
     //background: Background,
     writer: CodeWriter,
-    h: Hypotrochoid
+    h: Hypotrochoid,
 }
 
 fn model(app: &App) -> Model {

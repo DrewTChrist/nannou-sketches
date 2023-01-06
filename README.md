@@ -9,7 +9,4 @@ cargo run --example <name>
 
 ```
 
-## Genuary
-* 10 Minutes
-* Loop
-* Glitch
+## Sketches
