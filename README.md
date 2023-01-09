@@ -5,7 +5,7 @@ needs to be installed or `.cargo/config.toml` should be deleted.
 
 To run a sketch:
 ```Shell
-cargo run --example <name>
+cargo run --release --example <name>
 
 ```
 
