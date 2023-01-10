@@ -13,11 +13,10 @@ fn view(app: &App, frame: Frame) {
 
     draw.background().color(CORNFLOWERBLUE);
 
-
     let mut tris = Vec::new();
 
     let max = 2.0 * PI;
-    
+
     let mut i = 0.0;
     while i <= max {
         let theta = i * max;
