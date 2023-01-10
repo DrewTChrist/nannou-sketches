@@ -51,12 +51,12 @@ impl Hypotrochoid {
         self.y *= self.scale;
         self.x += xn;
         self.y += yn;
-        self.t += 0.05;
-        //self.t += 0.025;
+        //self.t += 0.05;
+        self.t += 0.01;
         //self.x_noise += 0.003;
         //self.y_noise += 0.003;
-        self.x_noise += 0.03;
-        self.y_noise += 0.03;
+        self.x_noise += 0.003;
+        self.y_noise += 0.003;
     }
     fn draw(&self, draw: &Draw) {
         draw.ellipse()
@@ -70,7 +70,7 @@ struct Model {
     particles: Vec<Hypotrochoid>,
 }
 
-const NUM_PARTICLES: usize = 150;
+const NUM_PARTICLES: usize = 500;
 
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
@@ -80,8 +80,8 @@ fn model(app: &App) -> Model {
         let ry = random_range(-25.0, 25.0);
         //let mut p = Hypotrochoid::new(pt2(rx, ry), 5.0, 7.0, 2.2, 60.0, 1.0, rgb_u32(0xD7E9B9));
         let mut p = Hypotrochoid::new(pt2(rx, ry), 4.0, 7.0, 2.2, 50.0, 1.5, rgb_u32(0x000000));
-        //p.t = i as f32 * 0.0125;
-        p.t = i as f32 * 0.05;
+        p.t = i as f32 * 0.025;
+        //p.t = i as f32 * 0.05;
         particles.push(p);
     }
     Model { particles }
