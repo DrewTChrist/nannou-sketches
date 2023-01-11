@@ -46,14 +46,12 @@ where
     pub fn increment(&mut self) {
         self.t += 0.01;
     }
-    pub fn update_x(&mut self) {
-        if let Some(xf) = self.x_func {
-            (xf)(self);
+    pub fn update(&mut self) {
+        if let Some(x_function) = self.x_func {
+            (x_function)(self);
         }
-    }
-    pub fn update_y(&mut self) {
-        if let Some(yf) = self.y_func {
-            (yf)(self);
+        if let Some(y_function) = self.y_func {
+            (y_function)(self);
         }
     }
     pub fn update_objects(&mut self) {

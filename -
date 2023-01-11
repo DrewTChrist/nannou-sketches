@@ -1,0 +1,92 @@
+use nannou::prelude::*;
+
+fn main() {
+    nannou::app(model).update(update).run();
+}
+
+struct D0LSystem {
+    iterations: Vec<String>,
+    rules: Vec<(String, String)>,
+    index: usize,
+    depth: u32,
+}
+
+impl D0LSystem {
+    fn new(axiom: String, depth: u32) -> Self {
+        let mut iterations = Vec::new();
+        iterations.push(axiom);
+        Self {
+            iterations,
+            rules: Vec::new(),
+            index: 0,
+            depth,
+        }
+    }
+    fn add_rule(&mut self, rule: (String, String)) {
+        self.rules.push(rule);
+    }
+    fn iterate(&mut self) {
+        if (self.index as u32) < self.depth {
+            let mut new_level = String::new();
+            for c in self.iterations[self.index].bytes().into_iter() {
+                for rule in &self.rules {
+                    if c as char == rule.0.as_bytes()[0] as char {
+                        new_level.push_str(&rule.1);
+                    }
+                }
+            }
+            self.iterations.push(new_level);
+            self.index += 1;
+        }
+    }
+    fn draw(&self, draw: &Draw) {
+        let mut y = 0.0;
+        let mut x = 0.0;
+        for level in &self.iterations {
+            for c in level.as_bytes() {
+                match *c as char {
+                    'a' => {
+                        draw.ellipse()
+                            .x_y(x, y)
+                            .radius(3.0)
+                            .color(WHITE);
+                    },
+                    'b' => {
+                        draw.ellipse()
+                            .x_y(x, y)
+                            .radius(3.0)
+                            .color(WHITE);
+                    },
+                    _ => {}
+                }
+            }
+        }
+    }
+}
+
+struct Model {
+    lsys: D0LSystem,
+}
+
+fn model(app: &App) -> Model {
+    let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
+    let mut lsys = D0LSystem::new(String::from("b"), 6);
+    lsys.add_rule((String::from("a"), String::from("ab")));
+    lsys.add_rule((String::from("b"), String::from("a")));
+    for _ in 0..lsys.depth {
+        lsys.iterate();
+    }
+    //if lsys.index == lsys.depth as usize {
+    //    println!("{:?}", lsys.iterations);
+    //}
+    Model { lsys }
+}
+
+fn update(_app: &App, _model: &mut Model, _update: Update) {}
+
+fn view(app: &App, model: &Model, frame: Frame) {
+    let draw = app.draw();
+    draw.background().color(BLACK);
+    model.lsys.draw(&draw);
+    draw.to_frame(app, &frame).unwrap();
+}

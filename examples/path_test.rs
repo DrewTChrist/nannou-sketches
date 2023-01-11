@@ -59,8 +59,7 @@ fn model(app: &App) -> Model {
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     model.path.increment();
-    model.path.update_x();
-    model.path.update_y();
+    model.path.update();
     model.path.update_objects();
 }
 
