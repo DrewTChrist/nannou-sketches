@@ -4,15 +4,38 @@ fn main() {
     nannou::app(model).update(update).run();
 }
 
-#[derive(Debug)]
+//#[derive(Debug, Clone)]
+#[derive(Clone)]
 struct Node {
     pos: Vec2,
+    c: char,
     left: Option<Box<Node>>,
     right: Option<Box<Node>>,
 }
 
+impl std::fmt::Debug for Node {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        write!(
+            f,
+            "Node {{ pos: {}, c: {}, left: {}, right: {} }}",
+            self.pos,
+            self.c,
+            if self.left.is_some() {
+                "Some(...)"
+            } else {
+                "None"
+            },
+            if self.right.is_some() {
+                "Some(...)"
+            } else {
+                "None"
+            }
+        )
+    }
+}
+
 impl Node {
-    fn new(pos: Vec2, left: Option<Node>, right: Option<Node>) -> Self {
+    fn new(pos: Vec2, c: char, left: Option<Node>, right: Option<Node>) -> Self {
         let mut leftnode = None;
         let mut rightnode = None;
         if let Some(n) = left {
@@ -23,6 +46,7 @@ impl Node {
         }
         Self {
             pos,
+            c,
             left: leftnode,
             right: rightnode,
         }
@@ -51,10 +75,10 @@ struct D0LSystem {
 impl D0LSystem {
     fn new(axiom: String, depth: u32) -> Self {
         let mut iterations = Vec::new();
-        iterations.push(axiom);
+        iterations.push(axiom.clone());
         Self {
             iterations,
-            nodes: Node::new(pt2(0.0, 0.0), None, None),
+            nodes: Node::new(pt2(0.0, 0.0), axiom.as_bytes()[0] as char, None, None),
             rules: Vec::new(),
             index: 0,
             depth,
@@ -79,39 +103,45 @@ impl D0LSystem {
     }
     fn build_nodes(mut i: usize, mut c: usize, iterations: &Vec<String>, node: &mut Node) {
         let mut node_ref = node;
-        println!("i: {}, c: {}", i, c);
         if i < iterations.len() {
             let bytes = iterations[i].as_bytes();
-            let endofline = !c < bytes.len();
             if c < bytes.len() {
                 match bytes[c] as char {
                     'a' => {
-                        node_ref.left = Some(Box::new(Node::new(pt2(0.0, 0.0), None, None)));
+                        node_ref.left = Some(Box::new(Node::new(pt2(0.0, 0.0), 'a', None, None)));
                         if let Some(n) = &mut node_ref.left {
-                            //D0LSystem::build_nodes(i, c + 1, iterations, n);
-                            c = if c < bytes.len() { c + 1 } else { 0 };
-                            i = if endofline { i + 1 } else { i };
-                            D0LSystem::build_nodes(i, c, iterations, n);
+                            D0LSystem::build_nodes(i, c + 1, iterations, n);
                         }
-                        node_ref.right = Some(Box::new(Node::new(pt2(0.0, 0.0), None, None)));
+                        node_ref.right = Some(Box::new(Node::new(pt2(0.0, 0.0), 'b', None, None)));
                         if let Some(n) = &mut node_ref.right {
-                            //D0LSystem::build_nodes(i, c + 2, iterations, n);
-                            c = if c < bytes.len() { c + 2 } else { 0 };
-                            i = if endofline { i + 1 } else { i };
-                            D0LSystem::build_nodes(i, c, iterations, n);
+                            D0LSystem::build_nodes(i, c + 2, iterations, n);
                         }
                     }
                     'b' => {
-                        node_ref.left = Some(Box::new(Node::new(pt2(0.0, 0.0), None, None)));
+                        node_ref.left = Some(Box::new(Node::new(pt2(0.0, 0.0), 'a', None, None)));
                         if let Some(n) = &mut node_ref.left {
-                            //D0LSystem::build_nodes(i, c + 1, iterations, n);
-                            c = if c < bytes.len() { c + 1 } else { 0 };
-                            i = if endofline { i + 1 } else { i };
-                            D0LSystem::build_nodes(i, c, iterations, n);
+                            D0LSystem::build_nodes(i, c + 1, iterations, n);
                         }
                     }
                     _ => {}
                 }
+            } else {
+                D0LSystem::build_nodes(i + 1, 0, iterations, node_ref);
+            }
+        }
+    }
+    fn iter_nodes(node: &Node, nodes: &mut Vec<Node>) {
+        let mut node_ref = node;
+        if node_ref.left.is_some() || node_ref.right.is_some() {
+            if let Some(n) = &node_ref.right {
+                node_ref = n;
+                nodes.push(*n.clone());
+                D0LSystem::iter_nodes(node_ref, nodes);
+            }
+            if let Some(n) = &node_ref.left {
+                node_ref = &n;
+                nodes.push(*n.clone());
+                D0LSystem::iter_nodes(node_ref, nodes);
             }
         }
     }
@@ -146,19 +176,22 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
-    let mut lsys = D0LSystem::new(String::from("b"), 10);
+    let mut lsys = D0LSystem::new(String::from("b"), 2);
     lsys.add_rule((String::from("a"), String::from("ab")));
     lsys.add_rule((String::from("b"), String::from("a")));
     for _ in 0..lsys.depth {
         lsys.iterate();
     }
     D0LSystem::build_nodes(0, 0, &mut lsys.iterations, &mut lsys.nodes);
-    println!("{:?}", lsys.nodes);
-    //if lsys.index == lsys.depth as usize {
-    //    for iter in &lsys.iterations {
-    //        println!("{:?}", iter);
-    //    }
-    //}
+    //println!("{:?}", lsys.nodes);
+    let mut count = 0;
+    let mut nodes: Vec<Node> = Vec::new();
+    D0LSystem::iter_nodes(&lsys.nodes, &mut nodes);
+    println!("{}\n", nodes.len());
+    for node in nodes {
+        println!("{node:?}");
+    }
+    println!("{:?}", lsys.iterations);
     Model { lsys }
 }
 
