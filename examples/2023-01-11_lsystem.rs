@@ -117,14 +117,14 @@ impl D0LSystem {
                     if let Some(n) = &mut node.right {
                         D0LSystem::build_nodes(i + 1, depth, n);
                     }
-                },
+                }
                 'b' => {
                     node.left = Some(Box::new(Node::new(pt2(0.0, 0.0), 'a', None, None)));
                     if let Some(n) = &mut node.left {
                         D0LSystem::build_nodes(i + 1, depth, n);
                     }
-                },
-                _ => {},
+                }
+                _ => {}
             }
         }
     }
