@@ -1,4 +1,4 @@
-cat > examples/$1.rs <<- EOF
+cat > examples/$(date -I)_$1.rs <<- EOF
 use nannou::prelude::*;
 
 fn main() {

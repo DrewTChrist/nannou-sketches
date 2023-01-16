@@ -68,11 +68,23 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 distances.push(dist);
             }
             distances.sort_by(|a, b| a.partial_cmp(b).unwrap_or(Equal));
-            let noise = map_range(distances[n], distances[0], distances[distances.len() -1], 255.0, 0.0);
+            let noise = map_range(
+                distances[n],
+                distances[0],
+                distances[distances.len() - 1],
+                255.0,
+                0.0,
+            );
             draw.ellipse()
                 .resolution(5.0)
                 .x_y(x as f32, y as f32)
-                .radius(map_range(distances[n], 0.0, distances[distances.len() -1] * 0.5, 5.0, 0.0))
+                .radius(map_range(
+                    distances[n],
+                    0.0,
+                    distances[distances.len() - 1] * 0.5,
+                    5.0,
+                    0.0,
+                ))
                 .color(srgba(
                     noise as f32 / 255.0,
                     noise as f32 / 255.0,
@@ -84,7 +96,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for (point, _, _) in &model.points {
         draw.ellipse()
             .resolution(10.0)
-            .x_y(point.x, point.y).radius(5.0).color(RED);
+            .x_y(point.x, point.y)
+            .radius(5.0)
+            .color(RED);
     }
     draw.to_frame(app, &frame).unwrap();
 }
