@@ -1,5 +1,5 @@
 use nannou::color::Alpha;
-use nannou::noise::{NoiseFn, Perlin};
+use nannou::noise::{Perlin};
 use nannou::prelude::*;
 
 fn main() {
@@ -162,7 +162,7 @@ impl Plaid {
         }
     }
     fn draw(&self, draw: &Draw, bounds: Rect) {
-        let x = || {
+        let _x = || {
             draw.rect()
                 .x_y(0.0, 0.0)
                 .w_h(bounds.w(), bounds.h())
@@ -202,7 +202,7 @@ fn model(app: &App) -> Model {
     }
 }
 
-fn update(app: &App, model: &mut Model, _update: Update) {
+fn update(_app: &App, _model: &mut Model, _update: Update) {
     //let rn = model.noise.get([model.nvals[0], 0.0]) * 0.05;
     //let gn = model.noise.get([model.nvals[1], 0.0]) * 0.05;
     //let bn = model.noise.get([model.nvals[2], 0.0]) * 0.05;

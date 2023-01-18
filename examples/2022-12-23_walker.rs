@@ -1,4 +1,4 @@
-use nannou::noise::{NoiseFn, Perlin};
+
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 
@@ -157,7 +157,7 @@ impl Settings {
         let rand_row = random_range(0, num_rows);
         let rand_col = random_range(0, num_cols);
         let rand_point = grid.points[rand_row][rand_col];
-        let mut walker: Walker = Walker::new(rand_point, rand_row as i32, rand_col as i32);
+        let walker: Walker = Walker::new(rand_point, rand_row as i32, rand_col as i32);
         Self {
             walker,
             show_grid: false,
@@ -184,7 +184,7 @@ fn model(app: &App) -> Model {
     }
 }
 
-fn update(app: &App, model: &mut Model, update: Update) {
+fn update(_app: &App, model: &mut Model, update: Update) {
     let egui = &mut model.egui;
     let settings = &mut model.settings;
 

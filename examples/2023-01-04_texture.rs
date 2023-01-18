@@ -60,7 +60,7 @@ struct Model {
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     let mut colors = Vec::<Alpha<Rgb<f32>, f32>>::new();
-    for i in 0..(3600 / 5) {
+    for _i in 0..(3600 / 5) {
         let g = random_range(0.0, 1.0);
         let a = random_range(0.1, 0.5);
         colors.push(srgba(g, g, g, a));

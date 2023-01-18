@@ -1,5 +1,4 @@
 use nannou::{
-    geom::{Ellipse, Tri},
     prelude::*,
 };
 
@@ -9,7 +8,7 @@ fn main() {
 
 fn view(app: &App, frame: Frame) {
     let draw = app.draw();
-    let win = app.window_rect();
+    let _win = app.window_rect();
 
     draw.background().color(CORNFLOWERBLUE);
 

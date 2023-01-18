@@ -2,7 +2,7 @@ use nannou::color::rgb_u32;
 use nannou::geom::Rect;
 use nannou::prelude::*;
 use nannou::text::{font::from_file, Font};
-use nannou_sketches::grad_circle::Background;
+
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -99,7 +99,7 @@ impl CodeWriter {
             String::from_utf8(self.string.as_bytes()[0..self.string_index].to_vec()).unwrap();
         let mut x_string = String::from("(");
         x_string.push_str(&x.to_string());
-        let mut y_string = y.to_string();
+        let y_string = y.to_string();
         string = string.replace("(x ", &x_string);
         string = string.replace(", y ", &y_string);
         let text = text(&string)

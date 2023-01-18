@@ -1,6 +1,6 @@
 //! Import photo and create a circular wave ((()))
 //! of moving "glitch"
-use nannou::color::rgb_u32;
+
 use nannou::image;
 use nannou::image::GenericImageView;
 use nannou::prelude::*;
@@ -69,7 +69,7 @@ fn model(app: &App) -> Model {
     }
 }
 
-fn update(_app: &App, model: &mut Model, _update: Update) {}
+fn update(_app: &App, _model: &mut Model, _update: Update) {}
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();

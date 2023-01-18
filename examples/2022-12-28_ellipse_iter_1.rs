@@ -93,7 +93,7 @@ fn model(app: &App) -> Model {
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
-    let bounds = app.window_rect();
+    let _bounds = app.window_rect();
     for ell in model.ell.iter_mut() {
         let noise = map_range(
             model.noise.get([ell.nstep as f64, 0.0]),

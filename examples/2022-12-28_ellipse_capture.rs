@@ -231,7 +231,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         .unwrap();
 }
 
-fn view(app: &App, model: &Model, frame: Frame) {
+fn view(_app: &App, model: &Model, frame: Frame) {
     let mut encoder = frame.command_encoder();
     model
         .texture_reshaper

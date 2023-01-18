@@ -96,8 +96,8 @@ impl Walker {
     /* - Make sure next point isn't already in the path
      * - Make sure it doesn't go outside of the grid boundaries */
     fn get_new_point(&mut self, t: f64) {
-        let mut noise = self.perlin.get([t, 0.0]);
-        let mut nmap = map_range(noise, -1.0, 1.0, 0.0, 8.0);
+        let noise = self.perlin.get([t, 0.0]);
+        let nmap = map_range(noise, -1.0, 1.0, 0.0, 8.0);
         //println!("{}", nmap as usize);
         let mut rand_direction = DIRECTIONS[nmap as usize];
         let mut new_location = rand_direction.to_row_col(self.current_row, self.current_col);
@@ -107,8 +107,8 @@ impl Walker {
             || new_location.1 > (WIDTH as i32 * 2 / STEP as i32) - 1
         {
             let r = random_range(-15.0, 15.0);
-            let mut noise = self.perlin.get([t + r, 0.0]);
-            let mut nmap = map_range(noise, -1.0, 1.0, 0.0, 8.0);
+            let noise = self.perlin.get([t + r, 0.0]);
+            let nmap = map_range(noise, -1.0, 1.0, 0.0, 8.0);
             //rand_direction = DIRECTIONS[random_range(0, 8)];
             rand_direction = DIRECTIONS[nmap as usize];
             new_location = rand_direction.to_row_col(self.current_row, self.current_col);
@@ -175,7 +175,7 @@ impl Settings {
         let rand_row = random_range(0, num_rows);
         let rand_col = random_range(0, num_cols);
         let rand_point = grid.points[rand_row][rand_col];
-        let mut walker: Walker = Walker::new(rand_point, rand_row as i32, rand_col as i32);
+        let walker: Walker = Walker::new(rand_point, rand_row as i32, rand_col as i32);
         Self {
             walker,
             show_grid: false,
@@ -231,7 +231,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
         *settings = Settings::default();
     }
 
-    let t = app.elapsed_frames() / 60;
+    let _t = app.elapsed_frames() / 60;
 
     //settings.walker.get_new_point(t as f64);
     settings.walker.get_new_point(model.tick);

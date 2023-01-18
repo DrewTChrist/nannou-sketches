@@ -51,7 +51,7 @@ struct Model {
 }
 
 fn model(app: &App) -> Model {
-    let window_id = app
+    let _window_id = app
         .new_window()
         .size(WIDTH, HEIGHT)
         .view(view)

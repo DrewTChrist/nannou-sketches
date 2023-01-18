@@ -72,7 +72,7 @@ impl Ball {
                 Shape::Line => {
                     let end = object.end;
                     let rad = end.y.atan2(end.x);
-                    let deg = rad * 180.0 / PI;
+                    let _deg = rad * 180.0 / PI;
                 }
                 Shape::Rect => {}
             }
@@ -97,7 +97,7 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let start = pt2(app.window_rect().left(), FLOOR);
-    let end = pt2(app.window_rect().right(), FLOOR);
+    let _end = pt2(app.window_rect().right(), FLOOR);
     Model {
         ball: Ball::new(-100.0, 175.0, 0.0, 0.0, 20.0),
         //floor: Floor::new(start, end),

@@ -1,7 +1,7 @@
-use nannou::math::deg_to_rad;
+
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
-use nannou_sketches::lsystem::{Axiom, LSystem, Rule, Turtle};
+use nannou_sketches::lsystem::{LSystem, Rule, Turtle};
 
 fn main() {
     nannou::app(model).update(update).run();
