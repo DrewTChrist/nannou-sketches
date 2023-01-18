@@ -1,4 +1,3 @@
-
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 use nannou_sketches::lsystem::{LSystem, Rule, Turtle};

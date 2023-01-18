@@ -3,7 +3,6 @@ use nannou::geom::Rect;
 use nannou::prelude::*;
 use nannou::text::{font::from_file, Font};
 
-
 fn main() {
     nannou::app(model).update(update).run();
 }

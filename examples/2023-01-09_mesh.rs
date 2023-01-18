@@ -1,6 +1,4 @@
-use nannou::{
-    prelude::*,
-};
+use nannou::prelude::*;
 
 fn main() {
     nannou::sketch(view).run()

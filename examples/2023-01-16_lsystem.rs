@@ -1,4 +1,5 @@
-
+use nannou::color::Blend;
+use nannou::noise::NoiseFn;
 use nannou::prelude::*;
 use nannou_sketches::lsystem::{LSystem, Rule, Turtle};
 
@@ -12,38 +13,49 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
-    //let mut lsys = LSystem::new('X', Turtle::new(pt2(0.0, 0.0), 90.0, 25.0, 5.0), 5)
+    //let mut lsys = LSystem::new("X", Turtle::new(pt2(0.0, 0.0), 90.0, 25.0, 5.0), 5)
     //    .add_alphabet(vec!['X', 'F', '-', '+', '[', ']'])
     //    .add_rule(Rule(
     //        'X',
-    //        //String::from("F+[[X]-X]-F[-FX]+X"),
-    //        String::from("F+[[X]-X]-F-[FX]+X"),
-    //        |_draw, _turtle| {},
+    //        String::from("F+[[X]-X]-F[-FX]+X"),
+    //        //String::from("F+[[X]-X]-F-[FX]+X"),
+    //        |_, _, _| {},
     //    ))
-    //    .add_rule(Rule('F', String::from("FF"), |draw, turtle| {
+    //    .add_rule(Rule('F', String::from("FF"), |draw, turtle, index| {
+    //        let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
+    //        let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
+    //        let xnmap = map_range(x_noise, -1.0, 1.0, -2.5, 2.5);
+    //        let ynmap = map_range(y_noise, -1.0, 1.0, -2.5, 2.5);
+    //        turtle.forward();
+    //        turtle.position = pt2(turtle.position.x + xnmap, turtle.position.y + ynmap);
     //        draw.line()
     //            .start(turtle.previous)
     //            .end(turtle.position)
     //            .weight(1.0)
     //            .color(WHITE);
-    //        turtle.forward();
     //    }))
-    //    .add_rule(Rule('-', String::from('-'), |_draw, turtle| {
+    //    .add_rule(Rule('-', String::from('-'), |_, turtle, _| {
     //        turtle.increase_angle();
     //    }))
-    //    .add_rule(Rule('+', String::from('+'), |_draw, turtle| {
+    //    .add_rule(Rule('+', String::from('+'), |_, turtle, _| {
     //        turtle.decrease_angle();
     //    }))
-    //    .add_rule(Rule('[', String::from('['), |_draw, turtle| {
+    //    .add_rule(Rule('[', String::from('['), |_, turtle, _| {
     //        turtle.push_state();
     //    }))
-    //    .add_rule(Rule(']', String::from(']'), |_draw, turtle| {
+    //    .add_rule(Rule(']', String::from(']'), |_, turtle, _| {
     //        turtle.pop_state();
     //    }));
-    //let mut lsys = LSystem::new('F', Turtle::new(pt2(0.0, 0.0), 0.0, 90.0, 5.0), 4)
+    //let mut lsys = LSystem::new("F", Turtle::new(pt2(0.0, 0.0), 0.0, 90.0, 5.0), 4)
     //    .add_alphabet(vec!['F', '-', '+'])
-    //    .add_rule(Rule('F', String::from("F+F-F-F+F"), |draw, turtle| {
-    //    //.add_rule(Rule('F', String::from("F+F-F-F+F-"), |draw, turtle| {
+    //    .add_rule(Rule('F', String::from("F+F-F-F+F"), |draw, turtle, index| {
+    //    //.add_rule(Rule('F', String::from("F+F-F-F+F-"), |draw, turtle, index| {
+    //        let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
+    //        let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
+    //        let xnmap = map_range(x_noise, -1.0, 1.0, -2.5, 2.5);
+    //        let ynmap = map_range(y_noise, -1.0, 1.0, -2.5, 2.5);
+    //        turtle.forward();
+    //        turtle.position = pt2(turtle.position.x + xnmap, turtle.position.y + ynmap);
     //        draw.line()
     //            .start(turtle.previous)
     //            .end(turtle.position)
@@ -54,47 +66,129 @@ fn model(app: &App) -> Model {
     //        //    .color(WHITE)
     //        //    .resolution(4.0)
     //        //    .radius(1.0);
-    //        turtle.forward();
     //    }))
-    //    .add_rule(Rule('+', String::from("+"), |_draw, turtle| {
+    //    .add_rule(Rule('+', String::from("+"), |_, turtle, _| {
     //        turtle.increase_angle();
     //    }))
-    //    .add_rule(Rule('-', String::from("-"), |_draw, turtle| {
+    //    .add_rule(Rule('-', String::from("-"), |_, turtle, _| {
     //        turtle.decrease_angle();
     //    }));
-    let mut lsys = LSystem::new('A', Turtle::new(pt2(0.0, 0.0), 0.0, 60.0, 5.0), 6)
+    let mut lsys = LSystem::new("A", Turtle::new(pt2(-240.0, -150.0), 0.0, 60.0, 5.0), 8)
         .add_alphabet(vec!['A', 'B', '-', '+'])
-        .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle| {
-            draw.line()
-                .start(turtle.previous)
-                .end(turtle.position)
-                .color(WHITE)
-                .weight(1.0);
+        .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
+            let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
+            let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
+            let xnmap = map_range(x_noise, -1.0, 1.0, -2.5, 2.5);
+            let ynmap = map_range(y_noise, -1.0, 1.0, -2.5, 2.5);
             turtle.forward();
+            turtle.position = pt2(turtle.position.x + xnmap, turtle.position.y + ynmap);
+            //if turtle.position.distance(pt2(0.0, 0.0)) < 150.0 {
+            if turtle.position.distance(pt2(0.0, 0.0)) < RADIUS
+                && turtle.previous.distance(pt2(0.0, 0.0)) < RADIUS
+            {
+                draw.line()
+                    .start(turtle.previous)
+                    .end(turtle.position)
+                    .color(DARKSLATEGRAY)
+                    .weight(2.0);
+            }
         }))
-        .add_rule(Rule('B', String::from("A+B+A"), |draw, turtle| {
-            draw.line()
-                .start(turtle.previous)
-                .end(turtle.position)
-                .color(WHITE)
-                .weight(1.0);
+        .add_rule(Rule('B', String::from("A+B+A"), |draw, turtle, index| {
+            let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
+            let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
+            let xnmap = map_range(x_noise, -1.0, 1.0, -2.5, 2.5);
+            let ynmap = map_range(y_noise, -1.0, 1.0, -2.5, 2.5);
             turtle.forward();
+            turtle.position = pt2(turtle.position.x + xnmap, turtle.position.y + ynmap);
+            if turtle.position.distance(pt2(0.0, 0.0)) < RADIUS
+                && turtle.previous.distance(pt2(0.0, 0.0)) < RADIUS
+            {
+                draw.line()
+                    .start(turtle.previous)
+                    .end(turtle.position)
+                    .color(DARKSLATEGRAY)
+                    .weight(2.0);
+            }
         }))
-        .add_rule(Rule('+', String::from("+"), |_draw, turtle| {
+        .add_rule(Rule('+', String::from("+"), |_, turtle, _| {
             turtle.increase_angle();
         }))
-        .add_rule(Rule('-', String::from("-"), |_draw, turtle| {
+        .add_rule(Rule('-', String::from("-"), |_, turtle, _| {
             turtle.decrease_angle();
         }));
+    //let mut lsys = LSystem::new("A", Turtle::new(pt2(0.0, 0.0), 90.0, 25.0, 5.0), 5)
+    //    .add_alphabet(vec!['A', 'B', 'C', '+', '-', '[', ']'])
+    //    .add_rule(Rule('A', String::from("B[-A-]B"), |draw, turtle, index| {
+    //        let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
+    //        let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
+    //        let xnmap = map_range(x_noise, -1.0, 1.0, -2.5, 2.5);
+    //        let ynmap = map_range(y_noise, -1.0, 1.0, -2.5, 2.5);
+    //        turtle.forward();
+    //        turtle.position = pt2(turtle.position.x + xnmap, turtle.position.y + ynmap);
+    //        draw.line()
+    //            .start(turtle.previous)
+    //            .end(turtle.position)
+    //            .weight(1.0)
+    //            .color(WHITE);
+    //    }))
+    //    .add_rule(Rule('B', String::from("A[+B+]A"), |draw, turtle, index| {
+    //        let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
+    //        let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
+    //        let xnmap = map_range(x_noise, -1.0, 1.0, -2.5, 2.5);
+    //        let ynmap = map_range(y_noise, -1.0, 1.0, -2.5, 2.5);
+    //        turtle.forward();
+    //        turtle.position = pt2(turtle.position.x + xnmap, turtle.position.y + ynmap);
+    //        draw.line()
+    //            .start(turtle.previous)
+    //            .end(turtle.position)
+    //            .weight(1.0)
+    //            .color(WHITE);
+    //    }))
+    //    .add_rule(Rule('+', String::from("+"), |_, turtle, _| {
+    //        turtle.increase_angle();
+    //    }))
+    //    .add_rule(Rule('-', String::from("-"), |_, turtle, _| {
+    //        turtle.decrease_angle();
+    //    }))
+    //    .add_rule(Rule('[', String::from("["), |_, turtle, _| {
+    //        turtle.push_state();
+    //    }))
+    //    .add_rule(Rule(']', String::from("]"), |_, turtle, _| {
+    //        turtle.pop_state();
+    //    }));
     lsys.build();
+    //println!("{}", lsys.string);
     Model { lsys }
 }
 
-fn update(_app: &App, _model: &mut Model, _update: Update) {}
+const RADIUS: f32 = 200.0;
+
+fn update(_app: &App, model: &mut Model, _update: Update) {
+    for noise in &mut model.lsys.noise {
+        noise.0 += 0.025;
+        noise.1 += 0.025;
+    }
+}
 
 fn view(app: &App, model: &Model, frame: Frame) {
+    let bounds = app.window_rect();
     let draw = app.draw();
-    draw.background().color(BLACK);
+    if app.elapsed_frames() == 1 {
+        draw.background().color(BLACK);
+    }
+    let fade = lin_srgba(0.0, 0.0, 0.0, 0.05);
+    let beige = lin_srgba(
+        BEIGE.red as f32 / 255.0,
+        BEIGE.green as f32 / 255.0,
+        BEIGE.blue as f32 / 255.0,
+        0.05,
+    );
+    let blend = fade.overlay(beige);
+    draw.ellipse().x_y(0.0, 0.0).radius(RADIUS).color(blend);
+    draw.rect()
+        .x_y(0.0, 0.0)
+        .w_h(bounds.w(), bounds.h())
+        .color(beige);
     model.lsys.draw(&draw);
     draw.to_frame(app, &frame).unwrap();
 }

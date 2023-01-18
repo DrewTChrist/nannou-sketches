@@ -1,5 +1,5 @@
 use nannou::color::Alpha;
-use nannou::noise::{Perlin};
+use nannou::noise::Perlin;
 use nannou::prelude::*;
 
 fn main() {
