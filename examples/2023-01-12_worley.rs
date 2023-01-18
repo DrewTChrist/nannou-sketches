@@ -26,7 +26,7 @@ fn model(app: &App) -> Model {
         .build(window.device());
     let mut points: Vec<(Vec2, f32, f32)> = Vec::new();
     let perlin = Perlin::new();
-    for _ in 0..5 {
+    for _ in 0..25 {
         points.push((
             pt2(
                 random_range(bounds.left(), bounds.right()),
