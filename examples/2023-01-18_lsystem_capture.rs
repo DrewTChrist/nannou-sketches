@@ -2,6 +2,7 @@ use nannou::color::Blend;
 use nannou::noise::NoiseFn;
 use nannou::prelude::*;
 use nannou_sketches::lsystem::{LSystem, Rule, Turtle};
+use nannou_sketches::capturer::FrameCapturer;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -10,10 +11,15 @@ fn main() {
 struct Model {
     lsys1: LSystem,
     lsys2: LSystem,
+    capturer: FrameCapturer,
 }
 
+const TEXTURE_SIZE: [u32; 2] = [600, 600];
+
 fn model(app: &App) -> Model {
-    let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
+    let [win_w, win_h] = [TEXTURE_SIZE[0], TEXTURE_SIZE[1]];
+    let window_id = app.new_window().size(600, 600).view(view).build().unwrap();
+    let window = app.window(window_id).unwrap();
     let mut lsys1 = LSystem::new("A", Turtle::new(pt2(-240.0, -150.0), 0.0, 60.0, 5.0), 8)
         .add_alphabet(vec!['A', 'B', '-', '+'])
         .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
@@ -95,12 +101,15 @@ fn model(app: &App) -> Model {
             }
         }));
     //println!("{}", lsys.string);
-    Model { lsys1, lsys2 }
+    std::fs::create_dir_all(&capture_directory(app)).unwrap();
+    Model { lsys1, lsys2, capturer: FrameCapturer::new(&window, TEXTURE_SIZE), }
 }
 
 const RADIUS: f32 = 200.0;
 
-fn update(_app: &App, model: &mut Model, _update: Update) {
+fn update(app: &App, model: &mut Model, _update: Update) {
+    let draw = &model.capturer.draw;
+    draw.reset();
     for noise in &mut model.lsys1.noise {
         noise.0 += 0.025;
         noise.1 += 0.025;
@@ -109,11 +118,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         noise.0 += 0.025;
         noise.1 += 0.025;
     }
-}
-
-fn view(app: &App, model: &Model, frame: Frame) {
     let bounds = app.window_rect();
-    let draw = app.draw();
     if app.elapsed_frames() == 1 {
         draw.background().color(BLACK);
     }
@@ -137,5 +142,29 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.ellipse().x_y(0.0, 0.0).radius(RADIUS).color(fade);
     model.lsys1.draw(&draw);
     model.lsys2.draw(&draw);
-    draw.to_frame(app, &frame).unwrap();
+    model.capturer.capture(&app);
+}
+
+fn view(app: &App, model: &Model, frame: Frame) {
+    let mut encoder = frame.command_encoder();
+    model
+        .capturer
+        .texture_reshaper
+        .encode_render_pass(frame.texture_view(), &mut *encoder);
+}
+
+fn exit(app: &App, model: Model) {
+    let window = app.main_window();
+    let device = window.device();
+    model
+        .capturer
+        .texture_capturer
+        .await_active_snapshots(&device)
+        .unwrap();
+}
+
+fn capture_directory(app: &App) -> std::path::PathBuf {
+    app.project_path()
+        .expect("could not locate project_path")
+        .join(app.exe_name().unwrap())
 }
