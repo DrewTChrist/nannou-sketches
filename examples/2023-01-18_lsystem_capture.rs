@@ -1,8 +1,8 @@
 use nannou::color::Blend;
 use nannou::noise::NoiseFn;
 use nannou::prelude::*;
-use nannou_sketches::lsystem::{LSystem, Rule, Turtle};
 use nannou_sketches::capturer::FrameCapturer;
+use nannou_sketches::lsystem::{LSystem, Rule, Turtle};
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -66,7 +66,8 @@ fn model(app: &App) -> Model {
     let mut lsys2 = lsys1.clone();
     lsys2.rules.remove(0);
     lsys2.rules.remove(0);
-    lsys2 = lsys2.add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
+    lsys2 = lsys2
+        .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
             let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
             let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
             let xnmap = map_range(x_noise, -1.0, 1.0, -2.5, 2.5);
@@ -102,7 +103,11 @@ fn model(app: &App) -> Model {
         }));
     //println!("{}", lsys.string);
     std::fs::create_dir_all(&capture_directory(app)).unwrap();
-    Model { lsys1, lsys2, capturer: FrameCapturer::new(&window, TEXTURE_SIZE), }
+    Model {
+        lsys1,
+        lsys2,
+        capturer: FrameCapturer::new(&window, TEXTURE_SIZE),
+    }
 }
 
 const RADIUS: f32 = 200.0;

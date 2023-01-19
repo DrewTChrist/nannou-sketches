@@ -12,7 +12,6 @@ pub struct Rule(
 pub struct Turtle {
     pub position: Vec2,
     pub previous: Vec2,
-    //pub states: Vec<(Vec2, f32)>,
     pub states: Vec<(Vec2, Vec2, f32)>,
     pub noise: Vec<(f64, f64)>,
     pub perlin: Perlin,
@@ -49,14 +48,11 @@ impl Turtle {
         self.angle -= self.angle_step;
     }
     pub fn push_state(&mut self) {
-        //self.states.push((self.position, self.angle));
         self.states.push((self.previous, self.position, self.angle));
     }
     pub fn pop_state(&mut self) {
         if let Some(state) = self.states.pop() {
             self.previous = state.0;
-            //self.position = state.0;
-            //self.angle = state.1;
             self.position = state.1;
             self.angle = state.2;
         }
@@ -75,13 +71,22 @@ pub struct LSystem {
 }
 
 impl LSystem {
-    pub fn new(axiom: &str, turtle: Turtle, depth: usize) -> Self {
+    //pub fn new(axiom: &str, turtle: Turtle, depth: usize) -> Self {
+    pub fn new(
+        axiom: &str,
+        depth: usize,
+        position: Vec2,
+        angle: f32,
+        angle_step: f32,
+        distance: f32,
+    ) -> Self {
         Self {
             alphabet: vec![],
             axiom: String::from(axiom),
             rules: vec![],
             noise: Vec::new(),
-            turtle,
+            //turtle,
+            turtle: Turtle::new(position, angle, angle_step, distance),
             string: String::new(),
             depth,
         }

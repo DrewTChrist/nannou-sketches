@@ -14,7 +14,8 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
-    let mut lsys1 = LSystem::new("A", Turtle::new(pt2(-240.0, -150.0), 0.0, 60.0, 5.0), 8)
+    //let mut lsys1 = LSystem::new("A", Turtle::new(pt2(-240.0, -150.0), 0.0, 60.0, 5.0), 8)
+    let mut lsys1 = LSystem::new("A", 8, pt2(-240.0, -150.0), 0.0, 60.0, 5.0)
         .add_alphabet(vec!['A', 'B', '-', '+'])
         .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
             let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
@@ -60,7 +61,8 @@ fn model(app: &App) -> Model {
     let mut lsys2 = lsys1.clone();
     lsys2.rules.remove(0);
     lsys2.rules.remove(0);
-    lsys2 = lsys2.add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
+    lsys2 = lsys2
+        .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
             let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
             let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
             let xnmap = map_range(x_noise, -1.0, 1.0, -2.5, 2.5);
