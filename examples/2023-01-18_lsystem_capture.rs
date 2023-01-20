@@ -20,8 +20,7 @@ fn model(app: &App) -> Model {
     let [win_w, win_h] = [TEXTURE_SIZE[0], TEXTURE_SIZE[1]];
     let window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     let window = app.window(window_id).unwrap();
-    let mut lsys1 = LSystem::new("A", Turtle::new(pt2(-240.0, -150.0), 0.0, 60.0, 5.0), 8)
-        .add_alphabet(vec!['A', 'B', '-', '+'])
+    let mut lsys1 = LSystem::new("A", 8, pt2(-240.0, -150.0), 0.0, 60.0, 5.0)
         .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
             let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
             let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);

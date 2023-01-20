@@ -1,7 +1,7 @@
 use nannou::color::Blend;
 use nannou::noise::NoiseFn;
 use nannou::prelude::*;
-use nannou_sketches::lsystem::{LSystem, Rule, Turtle};
+use nannou_sketches::lsystem::{LSystem, Rule};
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -14,9 +14,8 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
-    //let mut lsys1 = LSystem::new("A", Turtle::new(pt2(-240.0, -150.0), 0.0, 60.0, 5.0), 8)
+    //let mut lsys1 = LSystem::new("A", 8, pt2(-240.0, -150.0), 0.0, 60.0, 5.0)
     let mut lsys1 = LSystem::new("A", 8, pt2(-240.0, -150.0), 0.0, 60.0, 5.0)
-        .add_alphabet(vec!['A', 'B', '-', '+'])
         .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
             let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
             let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);

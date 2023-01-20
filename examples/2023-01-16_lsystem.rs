@@ -14,7 +14,6 @@ struct Model {
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     //let mut lsys = LSystem::new("X", Turtle::new(pt2(0.0, 0.0), 90.0, 25.0, 5.0), 5)
-    //    .add_alphabet(vec!['X', 'F', '-', '+', '[', ']'])
     //    .add_rule(Rule(
     //        'X',
     //        String::from("F+[[X]-X]-F[-FX]+X"),
@@ -47,7 +46,6 @@ fn model(app: &App) -> Model {
     //        turtle.pop_state();
     //    }));
     //let mut lsys = LSystem::new("F", Turtle::new(pt2(0.0, 0.0), 0.0, 90.0, 5.0), 4)
-    //    .add_alphabet(vec!['F', '-', '+'])
     //    .add_rule(Rule('F', String::from("F+F-F-F+F"), |draw, turtle, index| {
     //    //.add_rule(Rule('F', String::from("F+F-F-F+F-"), |draw, turtle, index| {
     //        let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
@@ -73,8 +71,7 @@ fn model(app: &App) -> Model {
     //    .add_rule(Rule('-', String::from("-"), |_, turtle, _| {
     //        turtle.decrease_angle();
     //    }));
-    let mut lsys = LSystem::new("A", Turtle::new(pt2(-240.0, -150.0), 0.0, 60.0, 5.0), 8)
-        .add_alphabet(vec!['A', 'B', '-', '+'])
+    let mut lsys = LSystem::new("A", 8, pt2(-240.0, -150.0), 0.0, 60.0, 5.0)
         .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle, index| {
             let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
             let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);
@@ -117,7 +114,6 @@ fn model(app: &App) -> Model {
             turtle.decrease_angle();
         }));
     //let mut lsys = LSystem::new("A", Turtle::new(pt2(0.0, 0.0), 90.0, 25.0, 5.0), 5)
-    //    .add_alphabet(vec!['A', 'B', 'C', '+', '-', '[', ']'])
     //    .add_rule(Rule('A', String::from("B[-A-]B"), |draw, turtle, index| {
     //        let x_noise = turtle.perlin.get([turtle.noise[index].0, 0.0]);
     //        let y_noise = turtle.perlin.get([turtle.noise[index].1, 0.0]);

@@ -13,7 +13,6 @@ struct Settings {
 impl Default for Settings {
     fn default() -> Self {
         //let mut lsys = LSystem::new("X", Turtle::new(pt2(0.0, 0.0), 90.0, 25.0, 5.0), 5)
-        //    .add_alphabet(vec!['X', 'F', '-', '+', '[', ']'])
         //    .add_rule(Rule(
         //        'X',
         //        //String::from("F+[[X]-X]-F[-FX]+X"),
@@ -40,8 +39,7 @@ impl Default for Settings {
         //    .add_rule(Rule(']', String::from(']'), |_draw, turtle| {
         //        turtle.pop_state();
         //    }));
-        let mut lsys = LSystem::new("F", Turtle::new(pt2(-150.0, 0.0), 0.0, 90.0, 5.0), 4)
-            .add_alphabet(vec!['F', '-', '+'])
+        let mut lsys = LSystem::new("F", 4, pt2(-150.0, 0.0), 0.0, 90.0, 5.0)
             .add_rule(Rule(
                 'F',
                 String::from("F+F-F-F+F"),
@@ -69,7 +67,6 @@ impl Default for Settings {
                 turtle.decrease_angle();
             }));
         //let mut lsys = LSystem::new('A', Turtle::new(pt2(-150.0, -50.0), 0.0, 60.0, 5.0), 5)
-        //    .add_alphabet(vec!['A', 'B', '-', '+'])
         //    .add_rule(Rule('A', String::from("B-A-B"), |draw, turtle| {
         //        if pt2(0.0, 0.0).distance(turtle.previous) <= 150.0 {
         //            draw.line()

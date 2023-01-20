@@ -1,6 +1,30 @@
 use nannou::noise::Perlin;
 use nannou::prelude::*;
 
+pub mod default_rules {
+    use super::Rule;
+    pub fn left_bracket() -> Rule {
+        Rule('[', String::from("["), |_, turtle, _| {
+            turtle.push_state();
+        })
+    }
+    pub fn right_bracket() -> Rule {
+        Rule(']', String::from("]"), |_, turtle, _| {
+            turtle.pop_state();
+        })
+    }
+    pub fn plus() -> Rule {
+        Rule('+', String::from("+"), |_, turtle, _| {
+            turtle.increase_angle();
+        })
+    }
+    pub fn minus() -> Rule {
+        Rule('-', String::from("-"), |_, turtle, _| {
+            turtle.decrease_angle();
+        })
+    }
+}
+
 #[derive(Clone)]
 pub struct Rule(
     pub char,
@@ -71,7 +95,6 @@ pub struct LSystem {
 }
 
 impl LSystem {
-    //pub fn new(axiom: &str, turtle: Turtle, depth: usize) -> Self {
     pub fn new(
         axiom: &str,
         depth: usize,
@@ -85,15 +108,10 @@ impl LSystem {
             axiom: String::from(axiom),
             rules: vec![],
             noise: Vec::new(),
-            //turtle,
             turtle: Turtle::new(position, angle, angle_step, distance),
             string: String::new(),
             depth,
         }
-    }
-    pub fn add_alphabet(&mut self, alphabet: Vec<char>) -> Self {
-        self.alphabet = alphabet;
-        self.to_owned()
     }
     pub fn add_rule(&mut self, rule: Rule) -> Self {
         self.rules.push(rule);
