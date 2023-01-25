@@ -19,6 +19,7 @@ struct Model {
     //points: Vec<Vec2>
     points: Vec<Point>,
     perlin: Perlin,
+    frame: bool,
 }
 
 /*fn u32_to_srgba(color: u32, alpha: f32) -> Alpha<Rgb<f32>, f32> {
@@ -34,19 +35,9 @@ fn model(app: &App) -> Model {
     let mut t = 0.0;
     let radius = 1.0;
     let colors = vec![
-        //u32_to_srgba(0xffd4b2, 1.0),
-        //u32_to_srgba(0xfff6bd, 1.0),
-        //u32_to_srgba(0xceedc7, 1.0),
-        //u32_to_srgba(0x86c8bc, 1.0),
-        //0xffd4b2,
-        //0xfff6bd,
-        //0xceedc7,
-        //0x86c8bc,
-        //0x65647c,
-        //0x8b7e74,
-        //0xc7bca1,
-        //0xf1d3b3
-        0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62,
+        0xffd4b2, 0xfff6bd, 0xceedc7, 0x86c8bc,
+        //0x65647c, 0x8b7e74, 0xc7bca1, 0xf1d3b3
+        //0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62,
     ];
     for _ in 0..600 {
         points.push(Point {
@@ -62,7 +53,11 @@ fn model(app: &App) -> Model {
         t += 0.05;
     }
     let perlin = Perlin::new();
-    Model { points, perlin }
+    Model {
+        points,
+        perlin,
+        frame: false,
+    }
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
@@ -74,10 +69,13 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         point.noise.0 += 0.01;
         point.noise.1 += 0.01;
     }
+    if app.time / 5.0 > 10.51 {
+        model.frame = true;
+    }
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
-    let t = app.time;
+    let t = app.time / 5.0;
     let bounds = app.window_rect();
     let draw = app.draw();
     if app.elapsed_frames() == 1 {
@@ -105,4 +103,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
     draw.to_frame(app, &frame).unwrap();
+    if t > 10.5 && model.frame == false {
+        app.main_window().capture_frame("frame3.png");
+    }
 }
