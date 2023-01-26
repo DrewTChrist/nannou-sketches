@@ -30,8 +30,8 @@ fn model(app: &App) -> Model {
         ));
     }
     let gradient = Gradient::new(
-            //vec![0xc98474, 0xf2d388, 0x874c62, 0xa7d2cb]
-            vec![0x00425a, 0x1f8a70, 0xb7db38, 0xfc7300]
+        //vec![0xc98474, 0xf2d388, 0x874c62, 0xa7d2cb]
+        vec![0x00425a, 0x1f8a70, 0xb7db38, 0xfc7300]
             //vec![0x10a19d, 0x540375, 0xff7000, 0xffbf00]
             .iter()
             .map(|c| {
@@ -51,8 +51,10 @@ fn model(app: &App) -> Model {
 fn update(app: &App, model: &mut Model, _update: Update) {
     let bounds = app.window_rect();
     for (point, xstep, ystep) in &mut model.points {
-        let x_noise = map_range(model.perlin.get([*xstep as f64, 0.0]), -1.0, 1.0, -5.0, 5.0)*0.25;
-        let y_noise = map_range(model.perlin.get([*ystep as f64, 0.0]), -1.0, 1.0, -5.0, 5.0)*0.25;
+        let x_noise =
+            map_range(model.perlin.get([*xstep as f64, 0.0]), -1.0, 1.0, -5.0, 5.0) * 0.25;
+        let y_noise =
+            map_range(model.perlin.get([*ystep as f64, 0.0]), -1.0, 1.0, -5.0, 5.0) * 0.25;
         if point.x > bounds.left() && point.x < bounds.right() {
             point.x += x_noise;
         }
@@ -84,13 +86,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 distances.push(dist);
             }
             distances.sort_by(|a, b| a.partial_cmp(b).unwrap_or(Equal));
-            let noise = map_range(
-                distances[n],
-                0.0,
-                distances[n + 1],
-                1.0,
-                0.0,
-            );
+            let noise = map_range(distances[n], 0.0, distances[n + 1], 1.0, 0.0);
             //println!("{:?} {:?} {:?}", model.gradient.domain(), distances[n], noise);
             draw.ellipse()
                 .resolution(4.0)

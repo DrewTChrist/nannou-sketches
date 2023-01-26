@@ -35,7 +35,8 @@ fn model(app: &App) -> Model {
     let mut t = 0.0;
     let radius = 1.0;
     let colors = vec![
-        0xffd4b2, 0xfff6bd, 0xceedc7, 0x86c8bc,
+        0xffd4b2, 0xfff6bd, 0xceedc7,
+        0x86c8bc,
         //0x65647c, 0x8b7e74, 0xc7bca1, 0xf1d3b3
         //0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62,
     ];

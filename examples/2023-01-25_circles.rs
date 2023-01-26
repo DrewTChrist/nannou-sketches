@@ -1,6 +1,6 @@
-use nannou::prelude::*;
 use nannou::color::{Alpha, Gradient, LinSrgba};
 use nannou::noise::{NoiseFn, Perlin};
+use nannou::prelude::*;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -22,7 +22,7 @@ impl Circle {
             //t: random_range(-500.0, 500.0),
             color_index: 0.0,
             radius,
-            rot_radius
+            rot_radius,
         }
     }
     fn update(&mut self) {
@@ -30,7 +30,7 @@ impl Circle {
         self.location.x = self.t.cos() * self.rot_radius;
         self.location.y = self.t.sin() * self.rot_radius;
         let perlin = Perlin::new();
-        let noise = perlin.get([self.t as f64*0.1, 0.0]);
+        let noise = perlin.get([self.t as f64 * 0.1, 0.0]);
         //self.color_index = map_range(self.t.sin(), -1.0, 1.0, 0.0, 1.0);
         self.color_index = map_range(noise, -1.0, 1.0, 0.0, 1.0);
     }
@@ -47,13 +47,12 @@ struct Model {
     gradient: Gradient<LinSrgba>,
 }
 
+fn lerp(v0: f32, v1: f32, t: f32) -> f32 {
+    (1.0 - t) * v0 + t * v1
+}
+
 fn model(app: &App) -> Model {
-    let _window_id = app
-        .new_window()
-        .size(600, 600)
-        .view(view)
-        .build()
-        .unwrap();
+    let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     let mut circles = Vec::new();
     for i in 0..12 {
         circles.push(Circle::new(0.0, 0.0, i as f32, 115.0, 100.0));
