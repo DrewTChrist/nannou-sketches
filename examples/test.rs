@@ -65,7 +65,17 @@ fn grad_many(cs: &Vec<Alpha<Rgb<f32>, f32>>, mut t: f32) -> Alpha<Rgb<f32>, f32>
     t = clamp(t, 0.0, 1.0);
     let num_colors = cs.len() as f32;
     let step = 1.0 / (num_colors - 1.0);
-    srgba(0.0, 0.0, 0.0, 1.0)
+    let mut greatest = (0.0, 0, 0);
+    for i in 0..cs.len() - 1 {
+        let val = i as f32 * step;
+        if t >= val {
+            greatest = (val, i, i + 1);
+        }
+    }
+    let start_color = cs[greatest.1];
+    let end_color = cs[greatest.2];
+    //println!("{:?}, {}", greatest, t);
+    gradient(start_color, end_color, t)
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
@@ -80,7 +90,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.ellipse()
         .x_y(model.pos.x, model.pos.y)
         .radius(50.0)
-        //.color(gradient(model.colors[0], model.colors[2], model.t));
-        .color(grad_many(&model.colors, model.t));
+        .color(gradient(model.colors[0], model.colors[2], model.t));
+        //.color(grad_many(&model.colors, model.t));
     draw.to_frame(app, &frame).unwrap();
 }
