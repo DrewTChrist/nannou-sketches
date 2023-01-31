@@ -60,17 +60,7 @@ fn model(app: &App) -> Model {
         //0x65647c, 0x8b7e74, 0xc7bca1, 0xf1d3b3
         0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62,
     ];
-    let colors: Vec<Alpha<Rgb<f32>, f32>> = colors
-        .iter()
-        .map(|c| {
-            //let r = c >> 16;
-            //let g = c >> 8 & 0x00ff;
-            //let b = c & 0x0000ff;
-            //LinSrgba::new(r as f32 / 255.0, g as f32 / 255.0, b as f32 / 255.0, 0.5)
-            u32_to_srgba(*c, 0.1)
-        })
-        .collect();
-    //let gradient = Gradient::new(lin_colors);
+    let colors: Vec<Alpha<Rgb<f32>, f32>> = colors.iter().map(|c| u32_to_srgba(*c, 0.1)).collect();
     Model {
         circles,
         colors, /*,gradient*/

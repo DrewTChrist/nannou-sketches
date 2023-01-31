@@ -1,4 +1,4 @@
-use nannou::color::Alpha;
+use nannou::color::{Alpha, Gradient, LinSrgba};
 use nannou::noise::{NoiseFn, Perlin};
 use nannou::prelude::*;
 use nannou_sketches::utilities::u32_to_srgba;
@@ -8,6 +8,7 @@ fn main() {
 }
 
 struct Model {
+    gradient: Gradient<LinSrgba>,
     colors: Vec<Alpha<Rgb<f32>, f32>>,
     pos: Vec2,
     t: f32,
@@ -22,8 +23,19 @@ fn model(app: &App) -> Model {
         u32_to_srgba(0xc98474, 1.0),
         u32_to_srgba(0x874c62, 1.0),
     ];
+    let lcolors = vec![0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62];
+    let lin_colors = lcolors.iter().map(|c| {
+        //println!("{c:?}");
+        let r = c >> 16;
+        let g = c >> 8 & 0x00ff;
+        let b = c & 0x0000ff;
+        LinSrgba::new(r as f32 / 255.0, g as f32 / 255.0, b as f32 / 255.0, 1.0)
+        //LinSrgba::new(c.red, c.green, c.blue, c.alpha)
+    });
     let perlin = Perlin::new();
+    let gradient = Gradient::new(lin_colors);
     Model {
+        gradient,
         colors,
         pos: pt2(-250.0, 0.0),
         t: 0.0,
@@ -91,9 +103,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let bounds = app.window_rect();
     //draw.background().color(BLACK);
     draw.ellipse()
-        .x_y(model.pos.x, model.pos.y)
+        .x_y(model.pos.x, model.pos.y + 125.0)
         .radius(50.0)
         //.color(gradient(model.colors[0], model.colors[2], model.t));
         .color(grad_many(&model.colors, model.t));
+        //.color(model.gradient.get(model.t));
+    draw.ellipse()
+        .x_y(model.pos.x, model.pos.y)
+        .radius(50.0)
+        //.color(gradient(model.colors[0], model.colors[2], model.t));
+        //.color(grad_many(&model.colors, model.t));
+        .color(model.gradient.get(model.t));
     draw.to_frame(app, &frame).unwrap();
 }
