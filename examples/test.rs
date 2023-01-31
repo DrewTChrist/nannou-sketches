@@ -74,7 +74,11 @@ fn grad_many(cs: &Vec<Alpha<Rgb<f32>, f32>>, mut t: f32) -> Alpha<Rgb<f32>, f32>
     }
     let start_color = cs[greatest.1];
     let end_color = cs[greatest.2];
-    gradient(start_color, end_color, (t * (num_colors - 1.0)) - greatest.1 as f32)
+    gradient(
+        start_color,
+        end_color,
+        (t * (num_colors - 1.0)) - greatest.1 as f32,
+    )
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
