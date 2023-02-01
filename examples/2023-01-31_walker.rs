@@ -7,10 +7,8 @@ fn main() {
 }
 
 fn on_segment(p: Vec2, q: Vec2, r: Vec2) -> bool {
-    //if (q.x <= max(p.x, r.x) && q.x >= min(p.x, r.x) &&
-    //    q.y <= max(p.y, r.y) && q.y >= min(p.y, r.y)) {
-    if (q.x <= p.x.max(r.x) && q.x >= p.x.min(r.x) &&
-        q.y <= p.y.max(r.y) && q.y >= p.y.min(r.y)) {
+    if q.x <= p.x.max(r.x) && q.x >= p.x.min(r.x) &&
+        q.y <= p.y.max(r.y) && q.y >= p.y.min(r.y) {
        return true;
     }
 
@@ -97,7 +95,16 @@ impl Walker {
         let x = angle.cos() * 1.0;
         let y = angle.sin() * 1.0;
         let point = pt2(prev.x + x, prev.y + y);
-        self.points.push(point);
+        let mut push = true;
+        for p1 in &self.points {
+            for p2 in &self.points {
+                let int = intersect(point, prev, *p1, *p2);
+                push = !int;
+            }
+        }
+        if push {
+            self.points.push(point);
+        }
         self.t += 0.05;
     }
     fn draw(&self, draw: &Draw) {
