@@ -1,6 +1,6 @@
+use nannou::prelude::*;
 use nannou::color::Alpha;
 use nannou::noise::{NoiseFn, Perlin};
-use nannou::prelude::*;
 use nannou_sketches::gradient::{grad_many, lerp};
 use nannou_sketches::utilities::u32_to_srgba;
 
@@ -38,7 +38,7 @@ impl Line {
     fn _update(&mut self) {}
     fn draw(&self, draw: &Draw) {
         let points = self.points.iter().map(|p| (p.location, p.color));
-        draw.polyline().weight(50.0).points_colored(points);
+        draw.polyline().weight(1.0).points_colored(points);
     }
 }
 
@@ -53,17 +53,18 @@ fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     let colors: Vec<Alpha<Rgb<f32>, f32>> = vec![0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62]
         .iter()
-        .map(|c| u32_to_srgba(*c, 0.01))
+        .map(|c| u32_to_srgba(*c, 0.25))
         .collect();
     let mut points = Vec::new();
     let mut lines = Vec::new();
     let mut counter = 0.0;
     let radius = 300.0;
+    let num_points = 48.0;
     while counter < 2.0 * PI {
         let x = counter.cos() * radius;
         let y = counter.sin() * radius;
         points.push(pt2(x, y));
-        counter += (2.0 * PI) / 8.0;
+        counter += (2.0 * PI) / num_points;
     }
     let mut connections: Vec<(Vec2, Vec2)> = Vec::new();
     for p1 in &points {
@@ -71,15 +72,12 @@ fn model(app: &App) -> Model {
             if p1 != p2 && !connections.contains(&(*p2, *p1)) {
                 counter = 0.0;
                 let mut line = Line::new();
-                //for i in 0..15 {
                 while counter <= 1.01 {
-                    //let step = i as f32 * 0.1;
-                    let step = counter;
-                    let x = lerp(p1.x, p2.x, step);
-                    let y = lerp(p1.y, p2.y, step);
+                    let x = lerp(p1.x, p2.x, counter);
+                    let y = lerp(p1.y, p2.y, counter);
                     line.points
                         .push(Point::new(pt2(x, y), srgba(1.0, 1.0, 1.0, 1.0)));
-                    counter += 0.01;
+                    counter += 0.05;
                 }
                 lines.push(line);
                 connections.push((*p1, *p2));
@@ -94,23 +92,31 @@ fn model(app: &App) -> Model {
     }
 }
 
-fn update(_app: &App, model: &mut Model, _update: Update) {
+fn update(app: &App, model: &mut Model, _update: Update) {
+    let mouse = pt2(app.mouse.x, app.mouse.y);
     for line in &mut model.lines {
-        //let cnoise = model.perlin.get([line.color_t, 0.0]) as f32;
-        //let cnoise = map_range(cnoise, -1.0, 1.0, 0.0, 1.0);
+        let cnoise = model.perlin.get([line.color_t, 0.0]) as f32;
+        let cnoise = map_range(cnoise, -1.0, 1.0, 0.0, 1.0);
         for point in &mut line.points {
+            if point.location.distance(mouse) <= 25.0 {
+                let angle = (point.location.x-mouse.x).atan2(point.location.y-mouse.y) * (180.0/PI);
+                let x = mouse.x + angle.cos() * 25.0;
+                let y = mouse.y + angle.sin() * 25.0;
+                point.location.x = x;
+                point.location.y = y;
+            }
             //let noise_x = model.perlin.get([point.noise_t.0, 0.0]) as f32*0.5;
             //let noise_y = model.perlin.get([point.noise_t.1, 0.0]) as f32*0.5;
             //point.location.x += noise_x;
             //point.location.y += noise_y;
             //point.noise_t.0 += 0.0001;
             //point.noise_t.1 += 0.0001;
-            let cnoise = model.perlin.get([point.color_t, 0.0]) as f32;
-            let cnoise = map_range(cnoise, -1.0, 1.0, 0.0, 1.0);
+            //let cnoise = model.perlin.get([point.color_t, 0.0]) as f32;
+            //let cnoise = map_range(cnoise, -1.0, 1.0, 0.0, 1.0);
             point.color = grad_many(&model.colors, cnoise);
-            point.color_t += 0.05;
+            //point.color_t += 0.05;
         }
-        //line.color_t += 0.025;
+        line.color_t += 0.04;
     }
 }
 
