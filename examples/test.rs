@@ -107,7 +107,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .radius(50.0)
         //.color(gradient(model.colors[0], model.colors[2], model.t));
         .color(grad_many(&model.colors, model.t));
-        //.color(model.gradient.get(model.t));
+    //.color(model.gradient.get(model.t));
     draw.ellipse()
         .x_y(model.pos.x, model.pos.y)
         .radius(50.0)

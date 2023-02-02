@@ -1,6 +1,6 @@
-use nannou::prelude::*;
 use nannou::color::Alpha;
 use nannou::noise::{NoiseFn, Perlin};
+use nannou::prelude::*;
 use nannou_sketches::gradient::{grad_many, lerp};
 use nannou_sketches::utilities::u32_to_srgba;
 
@@ -33,7 +33,10 @@ struct Line {
 
 impl Line {
     fn new() -> Self {
-        Self { points: Vec::new(), color_t: random_range(-500.0, 500.0) }
+        Self {
+            points: Vec::new(),
+            color_t: random_range(-500.0, 500.0),
+        }
     }
     fn _update(&mut self) {}
     fn draw(&self, draw: &Draw) {
@@ -99,7 +102,8 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         let cnoise = map_range(cnoise, -1.0, 1.0, 0.0, 1.0);
         for point in &mut line.points {
             if point.location.distance(mouse) <= 25.0 {
-                let angle = (point.location.x-mouse.x).atan2(point.location.y-mouse.y) * (180.0/PI);
+                let angle =
+                    (point.location.x - mouse.x).atan2(point.location.y - mouse.y) * (180.0 / PI);
                 let x = mouse.x + angle.cos() * 25.0;
                 let y = mouse.y + angle.sin() * 25.0;
                 point.location.x = x;
