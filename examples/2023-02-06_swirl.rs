@@ -15,85 +15,69 @@ struct Circle {
 }
 
 struct Model {
-    /*points: Vec<Circle>,
-    t: f32,*/
+    colors: Vec<Alpha<Rgb<f32>, f32>>,
+    color_t: Vec<f32>
 }
 
 fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
-    /*let mut points = Vec::new();
-    let mut step = 0.0;
-    let mut swirl_radius = 1.0;
-    let mut circle_radius = 5.0;
-    let colors: Vec<Alpha<Rgb<f32>, f32>> = vec![0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62]
+    let colors: Vec<Alpha<Rgb<f32>, f32>> = vec![0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62, 0xa7d2cb]
         .iter()
         .map(|c| u32_to_srgba(*c, 1.0))
         .collect();
-    let mut color_t = 0.0;
-    while step <= 12.0 * PI {
-        let x = step.cos() * swirl_radius;
-        let y = step.sin() * swirl_radius;
-        points.push(Circle {
-            location: pt2(x, y),
-            radius: circle_radius,
-            color: grad_many(&colors, color_t),
-        });
-        //step += 0.25;
-        step += 0.25;
-        //circle_radius += 0.05;
-        circle_radius += 0.1;
-        //swirl_radius = circle_radius * 10.0;
-        swirl_radius += 1.0;
-        color_t += 0.0015;
-    }*/
-    //Model { points, t: 0.0 }
-    Model {}
+    let mut color_t = Vec::new();
+    let mut t = 0.0;
+    let mut ct = 0.0;
+    while t < 12.0 * PI {
+        color_t.push(ct);
+        t += 0.1;
+        ct += 0.002;
+    }
+    Model { colors, color_t }
 }
 
-fn update(_app: &App, _model: &mut Model, _update: Update) {}
+fn update(_app: &App, model: &mut Model, _update: Update) {
+    for i in 0..model.color_t.len() {
+        if model.color_t[i] < 1.0 {
+            model.color_t[i] += 0.05;
+        } else {
+            model.color_t[i] = 0.0;
+        }
+    }
+}
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let _bounds = app.window_rect();
     let draw = app.draw();
-    let c = BEIGE;
-    let bg = srgba(
-        c.red as f32 / 255.0,
-        c.green as f32 / 255.0,
-        c.blue as f32 / 255.0,
-        0.1,
-    );
-    draw.background().color(bg);
-    let mut points = Vec::new();
-    let mut step = 0.0;
+    draw.background().color(BEIGE);
+    //let t_step = 0.25;
+    let t_step = 0.1;
+    let circ_rad_step = 0.1;
+    //let swirl_rad_step = 1.0;
+    let swirl_rad_step = 0.5;
+    let color_t_step = 0.002;
+    let range = 12.0 * PI;
+    let mut t = 0.0;
     let mut swirl_radius = 1.0;
     let mut circle_radius = 5.0;
-    let colors: Vec<Alpha<Rgb<f32>, f32>> = vec![0xa7d2cb, 0xf2d388, 0xc98474, 0x874c62]
-        .iter()
-        .map(|c| u32_to_srgba(*c, 1.0))
-        .collect();
     let mut color_t = 0.0;
-    while step <= 12.0 * PI {
-        let x = step.cos() * swirl_radius;
-        let y = step.sin() * swirl_radius;
-        points.push(Circle {
-            location: pt2(x, y),
-            radius: circle_radius,
-            color: grad_many(&colors, color_t),
-        });
-        //step += 0.25;
-        step += 0.25;
-        //circle_radius += 0.05;
-        circle_radius += 0.1;
-        //swirl_radius = circle_radius * 10.0;
-        swirl_radius += 1.0;
-        color_t += 0.0015;
-    }
-    //for point in &model.points {
-    for point in points {
+    //let mut delta = 0.0;
+    let mut index: usize = 0;
+    while t <= range {
+        let x = t.cos() * swirl_radius;
+        let y = t.sin() * swirl_radius;
         draw.ellipse()
-            .xy(point.location)
-            .color(point.color)
-            .radius(point.radius);
+            .xy(pt2(x, y))
+            //.color(grad_many(&model.colors, model.color_t + delta))
+            .color(grad_many(&model.colors, model.color_t[index]))
+            .radius(circle_radius);
+        t += t_step;
+        circle_radius += circ_rad_step;
+        swirl_radius += swirl_rad_step;
+        //color_t += color_t_step;
+        //model.color_t += color_t_step;
+        //delta += 0.0025;
+        index += 1;
     }
     draw.to_frame(app, &frame).unwrap();
 }
