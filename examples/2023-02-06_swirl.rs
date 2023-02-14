@@ -1,7 +1,7 @@
 use nannou::color::Alpha;
 use nannou::prelude::*;
-use nannou_sketches::{gradient::grad_many, utilities::u32_to_srgba};
 use nannou_egui::{self, egui, Egui};
+use nannou_sketches::{gradient::grad_many, utilities::u32_to_srgba};
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -19,7 +19,7 @@ struct Settings {
     circ_rad_step: f32,
     swirl_rad_step: f32,
     color_t_step: f32,
-    range: f32
+    range: f32,
 }
 
 impl Default for Settings {
@@ -43,7 +43,7 @@ struct Model {
     colors: Vec<Alpha<Rgb<f32>, f32>>,
     color_t: Vec<f32>,
     egui: Egui,
-    settings: Settings
+    settings: Settings,
 }
 
 fn model(app: &App) -> Model {
@@ -68,7 +68,12 @@ fn model(app: &App) -> Model {
         t += 0.1;
         ct += 0.002;
     }
-    Model { colors, color_t, egui, settings: Settings::default() }
+    Model {
+        colors,
+        color_t,
+        egui,
+        settings: Settings::default(),
+    }
 }
 
 fn update(_app: &App, model: &mut Model, update: Update) {
