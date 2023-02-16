@@ -78,7 +78,7 @@ impl FlowField {
         //            //let y = line_point.y + (point.angle + chance).sin() * 1.0;
         //            let x = line_point.x + point.angle.cos() * self.length;
         //            let y = line_point.y + point.angle.sin() * self.length;
-        //            self.lines[i].points.push(pt2(x, y));
+        //            self.lines[i].push(pt2(x, y));
         //            self.lines[i].update();
         //        }
         //    }
@@ -97,19 +97,19 @@ impl FlowField {
             if let Some(n) = nearest {
                 let x = line_point.x + n.angle.cos() * self.length;
                 let y = line_point.y + n.angle.sin() * self.length;
-                line.points.push(pt2(x, y));
+                line.push(pt2(x, y));
                 line.update();
             }
         }
     }
     fn draw_grid(&self, draw: &Draw) {
         for point in &self.grid {
-            let x = point.location.x + point.angle.cos() * 5.0;
-            let y = point.location.y + point.angle.sin() * 5.0;
+            let x = point.location.x + point.angle.cos() * 7.5;
+            let y = point.location.y + point.angle.sin() * 7.5;
             draw.line()
                 .start(point.location)
                 .end(pt2(x, y))
-                .weight(1.0)
+                .weight(2.0)
                 .color(RED);
         }
     }
@@ -137,17 +137,24 @@ impl Point {
 struct Line {
     points: Vec<Vec2>,
     color: Alpha<Rgb<f32>, f32>,
+    len: usize,
 }
 
 impl Line {
     fn new(x: f32, y: f32, color: Alpha<Rgb<f32>, f32>) -> Self {
         let mut points = Vec::new();
         points.push(pt2(x, y));
-        Self { points, color }
+        Self { points, color, len: 1 }
     }
     fn update(&mut self) {
         if self.points.len() > 5 {
             self.points.remove(0);
+        }
+    }
+    fn push(&mut self, point: Vec2) {
+        if self.len < 500 {
+            self.points.push(point);
+            self.len += 1;
         }
     }
     fn draw(&self, draw: &Draw) {
@@ -155,7 +162,7 @@ impl Line {
             draw.line()
                 .start(self.points[i - 1])
                 .end(self.points[i])
-                .weight(2.0)
+                .weight(1.0)
                 .color(self.color);
         }
     }
@@ -176,7 +183,10 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
     //let field = FlowField::new(300, 300, 3, 1200, 5.0, 5.0, 0.003, 0.001, 0.005);
-    let field = FlowField::new(300, 300, 3, 500, 5.0, 1.0, 0.003, 0.001, 0.0025);
+    //let field = FlowField::new(300, 300, 3, 1000, 5.0, 2.0, 0.003, 0.001, 0.0025);
+    //let field = FlowField::new(350, 350, 50, 5000, 5.0, 0.5, 0.001, 0.001, 0.001); //this setting was really nice
+    let field = FlowField::new(350, 350, 50, 2000, 5.0, 0.5, 0.005, 0.005, 0.001); //this setting was really nice
+    //let field = FlowField::new(350, 350, 10, 3000, 5.0, 2.5, 0.002, 0.001, 0.003);
     Model {
         field,
         grid_on: false,
@@ -192,7 +202,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     if app.elapsed_frames() == 1 {
-        draw.background().color(BEIGE);
+        draw.background().color(DARKSLATEGRAY);
     }
     model.field.draw_lines(&draw);
     if model.grid_on {
