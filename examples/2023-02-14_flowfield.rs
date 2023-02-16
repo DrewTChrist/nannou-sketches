@@ -35,6 +35,8 @@ impl FlowField {
         let mut grid = Vec::new();
         let mut noise_xt = random_range(-5000.0, 5000.0);
         let mut noise_yt = random_range(-5000.0, 5000.0);
+        //let mut noise_xt = 1.0;
+        //let mut noise_yt = 0.0;
         let perlin = Perlin::new();
         for i in (-width..width).step_by(resolution) {
             for j in (-height..height).step_by(resolution) {
@@ -68,39 +70,39 @@ impl FlowField {
         }
     }
     fn update(&mut self) {
-        //for point in &mut self.grid {
-        //    for i in 0..self.lines.len() {
-        //        let line_point = self.lines[i].points[self.lines[i].points.len() - 1];
-        //        if point.location.distance(line_point) <= self.distance {
-        //            //let r = random_range(0.0, 10.0);
-        //            //let chance = if r >= 5.0 { 32.0 } else { 0.0 };
-        //            //let x = line_point.x + (point.angle + chance).cos() * 1.0;
-        //            //let y = line_point.y + (point.angle + chance).sin() * 1.0;
-        //            let x = line_point.x + point.angle.cos() * self.length;
-        //            let y = line_point.y + point.angle.sin() * self.length;
-        //            self.lines[i].push(pt2(x, y));
-        //            self.lines[i].update();
-        //        }
-        //    }
-        //}
-        for line in &mut self.lines {
-            let line_point = line.points[line.points.len() - 1];
-            let mut nearest = None;
-            let mut dist = 1000000000.0;
-            for i in 0..self.grid.len() {
-                let cur_dist = line_point.distance(self.grid[i].location);
-                if cur_dist <= dist {
-                    nearest = Some(&self.grid[i]);
-                    dist = cur_dist;
+        for point in &mut self.grid {
+            for i in 0..self.lines.len() {
+                let line_point = self.lines[i].points[self.lines[i].points.len() - 1];
+                if point.location.distance(line_point) <= self.distance {
+                    //let r = random_range(0.0, 10.0);
+                    //let chance = if r >= 5.0 { 32.0 } else { 0.0 };
+                    //let x = line_point.x + (point.angle + chance).cos() * 1.0;
+                    //let y = line_point.y + (point.angle + chance).sin() * 1.0;
+                    let x = line_point.x + point.angle.cos() * self.length;
+                    let y = line_point.y + point.angle.sin() * self.length;
+                    self.lines[i].push(pt2(x, y));
+                    self.lines[i].update();
                 }
             }
-            if let Some(n) = nearest {
-                let x = line_point.x + n.angle.cos() * self.length;
-                let y = line_point.y + n.angle.sin() * self.length;
-                line.push(pt2(x, y));
-                line.update();
-            }
         }
+        //for line in &mut self.lines {
+        //    let line_point = line.points[line.points.len() - 1];
+        //    let mut nearest = None;
+        //    let mut dist = 1000000000.0;
+        //    for i in 0..self.grid.len() {
+        //        let cur_dist = line_point.distance(self.grid[i].location);
+        //        if cur_dist <= dist {
+        //            nearest = Some(&self.grid[i]);
+        //            dist = cur_dist;
+        //        }
+        //    }
+        //    if let Some(n) = nearest {
+        //        let x = line_point.x + n.angle.cos() * self.length;
+        //        let y = line_point.y + n.angle.sin() * self.length;
+        //        line.push(pt2(x, y));
+        //        line.update();
+        //    }
+        //}
     }
     fn draw_grid(&self, draw: &Draw) {
         for point in &self.grid {
@@ -158,6 +160,12 @@ impl Line {
         }
     }
     fn draw(&self, draw: &Draw) {
+        //for point in &self.points {
+        //    draw.rect()
+        //        .xy(*point)
+        //        .w_h(10.0, 10.0)
+        //        .color(self.color);
+        //}
         for i in 1..self.points.len() {
             draw.line()
                 .start(self.points[i - 1])
@@ -185,7 +193,7 @@ fn model(app: &App) -> Model {
     //let field = FlowField::new(300, 300, 3, 1200, 5.0, 5.0, 0.003, 0.001, 0.005);
     //let field = FlowField::new(300, 300, 3, 1000, 5.0, 2.0, 0.003, 0.001, 0.0025);
     //let field = FlowField::new(350, 350, 50, 5000, 5.0, 0.5, 0.001, 0.001, 0.001); //this setting was really nice
-    let field = FlowField::new(350, 350, 50, 2000, 5.0, 0.5, 0.005, 0.005, 0.001); //this setting was really nice
+    let field = FlowField::new(350, 350, 10, 3000, 15.0, 2.0, 0.005, 0.005, 0.001); //this setting was really nice
     //let field = FlowField::new(350, 350, 10, 3000, 5.0, 2.5, 0.002, 0.001, 0.003);
     Model {
         field,
