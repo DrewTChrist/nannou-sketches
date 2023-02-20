@@ -146,7 +146,11 @@ impl Line {
     fn new(x: f32, y: f32, color: Alpha<Rgb<f32>, f32>) -> Self {
         let mut points = Vec::new();
         points.push(pt2(x, y));
-        Self { points, color, len: 1 }
+        Self {
+            points,
+            color,
+            len: 1,
+        }
     }
     fn update(&mut self) {
         if self.points.len() > 5 {
@@ -194,7 +198,7 @@ fn model(app: &App) -> Model {
     //let field = FlowField::new(300, 300, 3, 1000, 5.0, 2.0, 0.003, 0.001, 0.0025);
     //let field = FlowField::new(350, 350, 50, 5000, 5.0, 0.5, 0.001, 0.001, 0.001); //this setting was really nice
     let field = FlowField::new(350, 350, 10, 3000, 15.0, 2.0, 0.005, 0.005, 0.001); //this setting was really nice
-    //let field = FlowField::new(350, 350, 10, 3000, 5.0, 2.5, 0.002, 0.001, 0.003);
+                                                                                    //let field = FlowField::new(350, 350, 10, 3000, 5.0, 2.5, 0.002, 0.001, 0.003);
     Model {
         field,
         grid_on: false,
