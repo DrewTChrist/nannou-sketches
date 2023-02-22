@@ -1,5 +1,5 @@
-use nannou::prelude::*;
 use nannou::noise::{NoiseFn, Perlin};
+use nannou::prelude::*;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -24,7 +24,7 @@ struct Model {
     start: usize,
     end: usize,
     perlin: Perlin,
-    t: f64
+    t: f64,
 }
 
 fn model(app: &App) -> Model {
@@ -45,7 +45,7 @@ fn model(app: &App) -> Model {
         start: random_range(0, len),
         end: random_range(0, len),
         perlin: Perlin::new(),
-        t: random_range(-500.0, 500.0)
+        t: random_range(-500.0, 500.0),
     }
 }
 
