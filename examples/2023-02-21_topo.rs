@@ -1,5 +1,5 @@
-use nannou::prelude::*;
 use nannou::noise::{NoiseFn, Perlin};
+use nannou::prelude::*;
 
 fn main() {
     nannou::app(model).update(update).run();
