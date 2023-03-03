@@ -1,6 +1,6 @@
-use nannou::prelude::*;
 use nannou::color::Alpha;
 use nannou::noise::{NoiseFn, Perlin};
+use nannou::prelude::*;
 use nannou_sketches::utilities::u32_to_srgba;
 
 fn main() {
@@ -56,15 +56,15 @@ impl FlowField {
                     let y = y1 + t.sin() * size;
                     grid.push(Point::new(x, y, angle));
                     /*draw.ellipse()
-                        .x_y(x, y)
-                        .radius(1.0)
-                        .color(RED);*/
+                    .x_y(x, y)
+                    .radius(1.0)
+                    .color(RED);*/
                     t += (2.0 * PI) / 6.0;
                 }
                 /*draw.ellipse()
-                    .x_y(i as f32 * 6.0 * wid / 4.0, j as f32 * h)
-                    .radius(1.0)
-                    .color(WHITE);*/
+                .x_y(i as f32 * 6.0 * wid / 4.0, j as f32 * h)
+                .radius(1.0)
+                .color(WHITE);*/
                 let x2 = i as f32 * 6.0 * wid / 4.0 + 3.0 * wid / 4.0;
                 let y2 = j as f32 * h + h / 2.0;
                 let mut t = 0.0;
@@ -73,18 +73,18 @@ impl FlowField {
                     let y = y2 + t.sin() * size;
                     grid.push(Point::new(x, y, angle));
                     /*draw.ellipse()
-                        .x_y(x, y)
-                        .radius(1.0)
-                        .color(RED);*/
+                    .x_y(x, y)
+                    .radius(1.0)
+                    .color(RED);*/
                     t += (2.0 * PI) / 6.0;
                 }
                 /*draw.ellipse()
-                    .x_y(
-                        i as f32 * 6.0 * wid / 4.0 + 3.0 * wid / 4.0,
-                        j as f32 * h + h / 2.0,
-                    )
-                    .radius(1.0)
-                    .color(WHITE);*/
+                .x_y(
+                    i as f32 * 6.0 * wid / 4.0 + 3.0 * wid / 4.0,
+                    j as f32 * h + h / 2.0,
+                )
+                .radius(1.0)
+                .color(WHITE);*/
                 noise_xt += noise_t;
                 noise_yt += noise_t;
             }
@@ -240,50 +240,50 @@ fn model(app: &App) -> Model {
     let _window_id = app.new_window().size(600, 600).view(view).build().unwrap();
     //let mut grid = Vec::new();
     let flowfield = FlowField::new(350, 350, 10, 3000, 15.0, 0.5, 0.001, 0.005, 0.05); //this setting was really nice
-    //let size = 15.0;
-    //let wid = 2.0 * size;
-    //let h = 3.0.sqrt() * size;
-    //for i in -20..20 {
-    //    for j in -20..20 {
-    //        let x1 = i as f32 * 6.0 * wid / 4.0;
-    //        let y1 = j as f32 * h;
-    //        let mut t = 0.0;
-    //        for _ in 0..6 {
-    //            let x = x1 + t.cos() * size;
-    //            let y = y1 + t.sin() * size;
-    //            grid.push(pt2(x, y));
-    //            /*draw.ellipse()
-    //                .x_y(x, y)
-    //                .radius(1.0)
-    //                .color(RED);*/
-    //            t += (2.0 * PI) / 6.0;
-    //        }
-    //        /*draw.ellipse()
-    //            .x_y(i as f32 * 6.0 * wid / 4.0, j as f32 * h)
-    //            .radius(1.0)
-    //            .color(WHITE);*/
-    //        let x2 = i as f32 * 6.0 * wid / 4.0 + 3.0 * wid / 4.0;
-    //        let y2 = j as f32 * h + h / 2.0;
-    //        let mut t = 0.0;
-    //        for _ in 0..6 {
-    //            let x = x2 + t.cos() * size;
-    //            let y = y2 + t.sin() * size;
-    //            grid.push(pt2(x, y));
-    //            /*draw.ellipse()
-    //                .x_y(x, y)
-    //                .radius(1.0)
-    //                .color(RED);*/
-    //            t += (2.0 * PI) / 6.0;
-    //        }
-    //        /*draw.ellipse()
-    //            .x_y(
-    //                i as f32 * 6.0 * wid / 4.0 + 3.0 * wid / 4.0,
-    //                j as f32 * h + h / 2.0,
-    //            )
-    //            .radius(1.0)
-    //            .color(WHITE);*/
-    //    }
-    //}
+                                                                                       //let size = 15.0;
+                                                                                       //let wid = 2.0 * size;
+                                                                                       //let h = 3.0.sqrt() * size;
+                                                                                       //for i in -20..20 {
+                                                                                       //    for j in -20..20 {
+                                                                                       //        let x1 = i as f32 * 6.0 * wid / 4.0;
+                                                                                       //        let y1 = j as f32 * h;
+                                                                                       //        let mut t = 0.0;
+                                                                                       //        for _ in 0..6 {
+                                                                                       //            let x = x1 + t.cos() * size;
+                                                                                       //            let y = y1 + t.sin() * size;
+                                                                                       //            grid.push(pt2(x, y));
+                                                                                       //            /*draw.ellipse()
+                                                                                       //                .x_y(x, y)
+                                                                                       //                .radius(1.0)
+                                                                                       //                .color(RED);*/
+                                                                                       //            t += (2.0 * PI) / 6.0;
+                                                                                       //        }
+                                                                                       //        /*draw.ellipse()
+                                                                                       //            .x_y(i as f32 * 6.0 * wid / 4.0, j as f32 * h)
+                                                                                       //            .radius(1.0)
+                                                                                       //            .color(WHITE);*/
+                                                                                       //        let x2 = i as f32 * 6.0 * wid / 4.0 + 3.0 * wid / 4.0;
+                                                                                       //        let y2 = j as f32 * h + h / 2.0;
+                                                                                       //        let mut t = 0.0;
+                                                                                       //        for _ in 0..6 {
+                                                                                       //            let x = x2 + t.cos() * size;
+                                                                                       //            let y = y2 + t.sin() * size;
+                                                                                       //            grid.push(pt2(x, y));
+                                                                                       //            /*draw.ellipse()
+                                                                                       //                .x_y(x, y)
+                                                                                       //                .radius(1.0)
+                                                                                       //                .color(RED);*/
+                                                                                       //            t += (2.0 * PI) / 6.0;
+                                                                                       //        }
+                                                                                       //        /*draw.ellipse()
+                                                                                       //            .x_y(
+                                                                                       //                i as f32 * 6.0 * wid / 4.0 + 3.0 * wid / 4.0,
+                                                                                       //                j as f32 * h + h / 2.0,
+                                                                                       //            )
+                                                                                       //            .radius(1.0)
+                                                                                       //            .color(WHITE);*/
+                                                                                       //    }
+                                                                                       //}
 
     Model { flowfield }
 }
