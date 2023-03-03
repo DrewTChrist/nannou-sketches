@@ -1,16 +1,20 @@
-use nannou::prelude::*;
 use nannou::color::Alpha;
+use nannou::prelude::*;
 
 fn main() {
     nannou::app(model).update(update).run();
 }
 
-fn texture_circle(x: f32, y: f32, d: f32, fg: Alpha<Rgb<f32>, f32>, bg: Alpha<Rgb<f32>, f32>, draw: &Draw) {
+fn texture_circle(
+    x: f32,
+    y: f32,
+    d: f32,
+    fg: Alpha<Rgb<f32>, f32>,
+    bg: Alpha<Rgb<f32>, f32>,
+    draw: &Draw,
+) {
     let cap = d as u32 / 2 * 100;
-    draw.ellipse()
-        .x_y(x, y)
-        .radius(d / 2.0)
-        .color(bg);
+    draw.ellipse().x_y(x, y).radius(d / 2.0).color(bg);
     for i in 0..cap {
         let theta1 = random_range(0.0, 1.0) * 2.0 * PI;
         let x1 = x + theta1.cos() * d / 2.0;
@@ -44,7 +48,12 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     //draw.background().color(BLACK);
     let c = DARKSLATEGRAY;
     let fg = srgba(1.0, 1.0, 1.0, 0.1);
-    let bg = srgba(c.red as f32 / 255.0, c.green as f32 / 255.0, c.blue as f32 / 255.0, 1.0);
+    let bg = srgba(
+        c.red as f32 / 255.0,
+        c.green as f32 / 255.0,
+        c.blue as f32 / 255.0,
+        1.0,
+    );
     if app.elapsed_frames() == 1 {
         texture_circle(0.0, 0.0, 300.0, fg, bg, &draw);
     }
