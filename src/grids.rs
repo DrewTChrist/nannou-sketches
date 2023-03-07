@@ -81,29 +81,35 @@ impl NoiseGrid {
     }
 }
 
-pub fn hex_grid(grid: &mut Vec<Vec2>, radius: f32) {
+pub fn hex_grid(grid: &mut Vec<Vec2>, x: isize, y: isize, rows: isize, cols: isize, radius: f32) {
     //let size = 15.0;
     let size = radius;
-    let wid = 2.0 * size;
-    let h = 3.0.sqrt() * size;
-    for i in -20..20 {
-        for j in -20..20 {
-            let x1 = i as f32 * 6.0 * wid / 4.0;
-            let y1 = j as f32 * h;
+    let width = 2.0 * size;
+    let height = 3.0.sqrt() * size;
+    for i in x..x+rows {
+        for j in y..y+cols {
+            let x1 = i as f32 * 6.0 * width / 4.0;
+            let y1 = j as f32 * height;
             let mut t = 0.0;
             for _ in 0..6 {
-                let x = x1 + t.cos() * size;
-                let y = y1 + t.sin() * size;
-                grid.push(pt2(x, y));
+                let x = ((x1 + t.cos() * size) * 100.0).round() / 100.0;
+                let y = ((y1 + t.sin() * size) * 100.0).round() / 100.0;
+                if !grid.contains(&pt2(x, y)) {
+                    grid.push(pt2(x, y));
+                }
                 t += (2.0 * PI) / 6.0;
             }
-            let x2 = i as f32 * 6.0 * wid / 4.0 + 3.0 * wid / 4.0;
-            let y2 = j as f32 * h + h / 2.0;
+            let x2 = i as f32 * 6.0 * width / 4.0 + 3.0 * width / 4.0;
+            let y2 = j as f32 * height + height / 2.0;
             let mut t = 0.0;
             for _ in 0..6 {
-                let x = x2 + t.cos() * size;
-                let y = y2 + t.sin() * size;
-                grid.push(pt2(x, y));
+                //let x = x2 + t.cos() * size;
+                //let y = y2 + t.sin() * size;
+                let x = ((x2 + t.cos() * size) * 100.0).round() / 100.0;
+                let y = ((y2 + t.sin() * size) * 100.0).round() / 100.0;
+                if !grid.contains(&pt2(x, y)) {
+                    grid.push(pt2(x, y));
+                }
                 t += (2.0 * PI) / 6.0;
             }
         }
