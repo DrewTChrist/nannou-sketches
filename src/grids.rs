@@ -112,3 +112,28 @@ pub fn hex_grid(grid: &mut Vec<Vec2>, x: isize, y: isize, rows: isize, cols: isi
         }
     }
 }
+
+pub fn hex_grid_test(grid: &mut Vec<Vec2>, radius: f32, x: f32, y: f32, rows: usize, cols: usize) {
+    let width = 2.0 * radius;
+    let height = 3.0.sqrt() * radius;
+    let mut start_x = x;
+    let mut start_y = y;
+    for _ in 0..rows {
+        for _ in 0..cols {
+            let x1 = start_x * 6.0 * width / 4.0;
+            let y1 = start_y * height;
+            let mut t = 0.0;
+            for _ in 0..6 {
+                let x = ((x1 + t.cos() * radius) * 100.0).round() / 100.0;
+                let y = ((y1 + t.sin() * radius) * 100.0).round() / 100.0;
+                if !grid.contains(&pt2(x, y)) {
+                    grid.push(pt2(x, y));
+                }
+                t += (2.0 * PI) / 6.0;
+            }
+            start_x += 1.0;
+        }
+        start_x = x;
+        start_y += 1.0;
+    }
+}
