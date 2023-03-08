@@ -82,12 +82,11 @@ impl NoiseGrid {
 }
 
 pub fn hex_grid(grid: &mut Vec<Vec2>, x: isize, y: isize, rows: isize, cols: isize, radius: f32) {
-    //let size = 15.0;
     let size = radius;
     let width = 2.0 * size;
     let height = 3.0.sqrt() * size;
-    for i in x..x+rows {
-        for j in y..y+cols {
+    for i in x..x + rows {
+        for j in y..y + cols {
             let x1 = i as f32 * 6.0 * width / 4.0;
             let y1 = j as f32 * height;
             let mut t = 0.0;
@@ -103,8 +102,6 @@ pub fn hex_grid(grid: &mut Vec<Vec2>, x: isize, y: isize, rows: isize, cols: isi
             let y2 = j as f32 * height + height / 2.0;
             let mut t = 0.0;
             for _ in 0..6 {
-                //let x = x2 + t.cos() * size;
-                //let y = y2 + t.sin() * size;
                 let x = ((x2 + t.cos() * size) * 100.0).round() / 100.0;
                 let y = ((y2 + t.sin() * size) * 100.0).round() / 100.0;
                 if !grid.contains(&pt2(x, y)) {
