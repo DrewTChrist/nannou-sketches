@@ -49,7 +49,7 @@ fn model(app: &App) -> Model {
         color += 0.00135;
         color_t += 0.0015;
     }
-    println!("{:#?}", &points[0..10]);
+    //println!("{:#?}", &points[0..10]);
     for i in 0..points.len() {
         rand_points.push(pt2(
             random_range(-300.0, 300.0),
